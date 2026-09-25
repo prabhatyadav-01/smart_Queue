@@ -240,24 +240,31 @@ function createBookingService({ db, notifier, events }) {
   }
 
   async function create({ userId, serviceId, date, slotIndex, kind, now, system = false, status = 'booked' }) {
-    const { id, orgId } = await tx(db, async () => {
-      const svc = await requireService(serviceId);
-      const day = kind === 'walkin' ? S.toDateStr(now) : date;
-      assertBookableDate(day, now);
-      const pick = await pickSeat(svc, day, slotIndex, kind, now);
-      if (!system) await assertUserCanBook(userId, svc, day, pick.slotIndex, now);
-      const insertId = await insertBooking({ userId, svc, date: day, ...pick, kind, status, now });
-      return { id: insertId, orgId: svc.org_id };
-    });
-    const view = await viewById(id, now);
-    await publish(userId, orgId, system ? null : {
-      bookingId: id,
-      type: 'booked',
-      level: 'success',
-      title: `Token ${view.tokenCode} confirmed`,
-      body: `${view.service.name} at ${view.org.name}, ${whenLabel(view.date, view.slotTime, now)}. Check in when you arrive — we'll remind you ${P.REMIND_BEFORE_MIN} min before.`,
-    });
-    return view;
+    try {
+      const { id, orgId } = await tx(db, async () => {
+        const svc = await requireService(serviceId);
+        const day = kind === 'walkin' ? S.toDateStr(now) : date;
+        assertBookableDate(day, now);
+        const pick = await pickSeat(svc, day, slotIndex, kind, now);
+        if (!system) await assertUserCanBook(userId, svc, day, pick.slotIndex, now);
+        const insertId = await insertBooking({ userId, svc, date: day, ...pick, kind, status, now });
+        return { id: insertId, orgId: svc.org_id };
+      });
+      const view = await viewById(id, now);
+      await publish(userId, orgId, system ? null : {
+        bookingId: id,
+        type: 'booked',
+        level: 'success',
+        title: `Token ${view.tokenCode} confirmed`,
+        body: `${view.service.name} at ${view.org.name}, ${whenLabel(view.date, view.slotTime, now)}. Check in when you arrive — we'll remind you ${P.REMIND_BEFORE_MIN} min before.`,
+      });
+      return view;
+    } catch (err) {
+      if (err?.code === '23505' || err?.message?.includes('duplicate key value') || err?.message?.includes('UNIQUE constraint failed')) {
+        throw errors.conflict('This slot was just filled by another booking. Please choose another.', 'SLOT_TAKEN');
+      }
+      throw err;
+    }
   }
 
   async function reschedule({ userId, bookingId, date, slotIndex, now }) {

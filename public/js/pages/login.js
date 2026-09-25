@@ -324,6 +324,21 @@ async function boot() {
     }
   });
 
+  // Check for Supabase OAuth callback tokens in URL hash
+  if (window.location.hash && window.location.hash.includes('access_token')) {
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    const accessToken = hashParams.get('access_token');
+    if (accessToken) {
+      try {
+        const next = await post('/api/auth/supabase-session', { access_token: accessToken });
+        window.history.replaceState(null, '', window.location.pathname);
+        return handleNext(next);
+      } catch (err) {
+        toast('Google sign-in failed', { body: err.message, type: 'danger' });
+      }
+    }
+  }
+
   try {
     const me = await api('/api/auth/me');
     if (me.user?.verified) return finish(me.user);
@@ -333,7 +348,7 @@ async function boot() {
   }
   try {
     const config = await api('/api/config');
-    await initGoogle(config.googleClientId);
+    await initGoogle(config.googleClientId, config.supabaseUrl, config.supabaseAnonKey);
   } catch (err) {
     $('[data-google]').textContent = err.message;
   }
