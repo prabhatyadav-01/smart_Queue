@@ -56,14 +56,14 @@ async function openDb(options = {}) {
     }
   } else {
     connectionString = options.connectionString || process.env.DATABASE_URL || process.env.SUPABASE_DB_URL || '';
-    isMemory = Boolean(options.isMemory || options === ':memory:' || (!connectionString && process.env.NODE_ENV !== 'production'));
+    isMemory = Boolean(options.isMemory || options === ':memory:' || !connectionString);
   }
 
   let pool;
   if (isMemory) {
-    console.log('[db] Running with in-memory Postgres database (pg-mem).');
+    console.warn('[db] Running with in-memory Postgres database (pg-mem).');
     if (!connectionString) {
-      console.log('[db] Set DATABASE_URL or SUPABASE_DB_URL in .env to connect to live Supabase Postgres.');
+      console.warn('[db] Set DATABASE_URL or SUPABASE_DB_URL to connect to live Supabase Postgres.');
     }
     const { newDb } = require('pg-mem');
     const memDb = newDb();
@@ -77,14 +77,12 @@ async function openDb(options = {}) {
     const pgAdapter = memDb.adapters.createPg();
     pool = new pgAdapter.Pool();
   } else {
-    if (!connectionString) {
-      throw new Error('DATABASE_URL or SUPABASE_DB_URL must be provided in production.');
-    }
     const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
+    const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
     pool = new pg.Pool({
       connectionString,
       ssl: isLocal ? false : { rejectUnauthorized: false },
-      max: options.maxConnections || 20,
+      max: options.maxConnections || (isServerless ? 2 : 20),
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 10000,
     });

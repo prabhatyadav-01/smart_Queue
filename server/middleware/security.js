@@ -22,7 +22,10 @@ function createSameOriginGuard(publicOrigin) {
     if (origin) {
       let allowed = false;
       try {
-        allowed = publicOrigin ? origin === publicOrigin : new URL(origin).host === req.headers.host;
+        const originHost = new URL(origin).host;
+        const reqHost = req.headers['x-forwarded-host'] || req.headers.host;
+        const pubHost = publicOrigin ? new URL(publicOrigin).host : null;
+        allowed = originHost === reqHost || (pubHost && originHost === pubHost);
       } catch {
         allowed = false;
       }

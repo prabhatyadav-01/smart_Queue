@@ -324,18 +324,23 @@ async function boot() {
     }
   });
 
-  // Check for Supabase OAuth callback tokens in URL hash
-  if (window.location.hash && window.location.hash.includes('access_token')) {
-    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    const accessToken = hashParams.get('access_token');
-    if (accessToken) {
-      try {
-        const next = await post('/api/auth/supabase-session', { access_token: accessToken });
-        window.history.replaceState(null, '', window.location.pathname);
-        return handleNext(next);
-      } catch (err) {
-        toast('Google sign-in failed', { body: err.message, type: 'danger' });
-      }
+  // Check for Supabase OAuth callback tokens or errors
+  const hash = window.location.hash ? window.location.hash.replace(/^#/, '') : '';
+  const search = window.location.search ? window.location.search.replace(/^\?/, '') : '';
+  const allParams = new URLSearchParams(hash + (hash && search ? '&' : '') + search);
+  const accessToken = allParams.get('access_token');
+  const oauthError = allParams.get('error_description') || allParams.get('error');
+
+  if (oauthError) {
+    toast('Google sign-in error: ' + decodeURIComponent(oauthError), { type: 'danger' });
+    window.history.replaceState(null, '', window.location.pathname);
+  } else if (accessToken) {
+    try {
+      const next = await post('/api/auth/supabase-session', { access_token: accessToken });
+      window.history.replaceState(null, '', window.location.pathname);
+      return handleNext(next);
+    } catch (err) {
+      toast('Google sign-in failed', { body: err.message, type: 'danger' });
     }
   }
 
@@ -350,7 +355,11 @@ async function boot() {
     const config = await api('/api/config');
     await initGoogle(config.googleClientId, config.supabaseUrl, config.supabaseAnonKey);
   } catch (err) {
-    $('[data-google]').textContent = err.message;
+    console.warn('Could not load auth configuration:', err);
+    const slot = $('[data-google]');
+    if (slot) slot.innerHTML = '';
+    const orSlot = $('[data-or]');
+    if (orSlot) orSlot.hidden = true;
   }
 }
 
