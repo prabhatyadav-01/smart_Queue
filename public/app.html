@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>My tokens — SmartQueue</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <script type="module" src="/js/pages/app.js"></script>
+</head>
+<body class="app-page">
+  <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <a class="brand" href="/" aria-label="SmartQueue home"><img src="/img/logo.png" alt="SmartQueue" class="brand-logo-img" width="34" height="34"><span>SmartQueue</span></a>
+    <nav class="nav-links" aria-label="App">
+      <a href="#tokens">My tokens</a>
+      <a href="#book">Get a token</a>
+      <a href="/#live">Live queues</a>
+    </nav>
+    <div class="nav-actions">
+      <div data-theme-switch></div>
+      <button type="button" class="btn btn-ghost btn-icon bell" data-bell aria-label="Notifications"><svg class="i"><use href="/img/icons.svg#bell"></use></svg><span class="badge-dot" data-unread hidden>0</span></button>
+      <div class="row nav-auth" data-auth-slot></div>
+      <button type="button" class="btn btn-ghost btn-icon nav-toggle" aria-label="Open menu" aria-expanded="false"><svg class="i"><use href="/img/icons.svg#menu"></use></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container app-main">
+    <section class="app-hero">
+      <div>
+        <span class="eyebrow" data-greeting>Welcome</span>
+        <h1 class="app-title">Skip the queue.</h1>
+      </div>
+      <div class="row wrap app-hero-actions">
+        <button type="button" class="btn btn-sm btn-alerts on" data-enable-alerts aria-pressed="true" title="Real-time alerts active">
+          <span class="live-dot"></span>
+          <svg class="i"><use href="/img/icons.svg#bell"></use></svg>
+          <span data-alert-label>Alerts on</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="app-grid">
+      <section class="panel" id="tokens" aria-labelledby="tokens-title">
+        <div class="panel-head">
+          <h2 id="tokens-title">My tokens</h2>
+          <button type="button" class="btn btn-ghost btn-icon" data-refresh aria-label="Refresh tokens"><svg class="i"><use href="/img/icons.svg#refresh"></use></svg></button>
+        </div>
+        <div class="token-list" data-active></div>
+        <details class="history">
+          <summary>Recent history</summary>
+          <div class="history-list" data-history></div>
+        </details>
+      </section>
+
+      <section class="panel card book-panel" id="book" aria-labelledby="book-title">
+        <div class="panel-head">
+          <h2 id="book-title">Get a token</h2>
+          <span class="muted" data-limit-note></span>
+        </div>
+
+        <div class="step-block">
+          <div class="row wrap" data-cats></div>
+          <div class="search">
+            <svg class="i"><use href="/img/icons.svg#search"></use></svg>
+            <input class="input" type="search" placeholder="Search offices, hospitals, companies…" data-search aria-label="Search places">
+          </div>
+          <div class="org-list" data-orgs role="radiogroup" aria-label="Places"></div>
+        </div>
+
+        <div class="step-block" data-step2 hidden>
+          <div class="step-label"><span class="step-n">2</span>Which service?</div>
+          <div class="row wrap" data-services></div>
+        </div>
+
+        <div class="step-block" data-step3 hidden>
+          <div class="step-label"><span class="step-n">3</span>When?</div>
+          <div class="segmented" role="tablist" aria-label="Timing" data-mode>
+            <button type="button" role="tab" data-mode-v="walkin" aria-selected="true">Now (walk-in)</button>
+            <button type="button" role="tab" data-mode-v="appointment" aria-selected="false">Schedule a time</button>
+          </div>
+          <div class="stack" data-schedule hidden>
+            <div class="date-strip" role="tablist" aria-label="Date" data-dates></div>
+            <div class="slot-grid" data-slots></div>
+          </div>
+          <div class="confirm-bar" data-confirm></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <aside class="drawer" data-drawer aria-label="Notifications" aria-hidden="true" inert>
+    <div class="drawer-head">
+      <h3>Notifications</h3>
+      <span class="spacer"></span>
+      <button type="button" class="btn btn-ghost btn-sm" data-read-all>Mark all read</button>
+      <button type="button" class="btn btn-ghost btn-icon" data-drawer-close aria-label="Close notifications"><svg class="i"><use href="/img/icons.svg#x"></use></svg></button>
+    </div>
+    <div class="drawer-body" data-notifs></div>
+  </aside>
+  <div class="scrim" data-scrim hidden></div>
+</body>
+</html>

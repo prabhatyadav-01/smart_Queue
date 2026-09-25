@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Not found — SmartQueue</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="app-page">
+  <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+  <main class="container app-main">
+    <div class="state">
+      <span class="state-icon"><svg class="i"><use href="/img/icons.svg#ticket"></use></svg></span>
+      <h4>This token doesn't exist</h4>
+      <p class="muted">The page you're looking for isn't here.</p>
+      <a class="btn btn-primary" href="/">Back to SmartQueue</a>
+    </div>
+  </main>
+  <script type="module">
+    import { initParticleDrift } from '/js/core/particle-drift.js';
+    initParticleDrift();
+  </script>
+</body>
+</html>

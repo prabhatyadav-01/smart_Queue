@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dashboard — SmartQueue</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <script type="module" src="/js/pages/admin.js"></script>
+</head>
+<body class="app-page admin-page">
+  <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="nav">
+    <a class="brand" href="/" aria-label="SmartQueue home"><img src="/img/logo.png" alt="SmartQueue" class="brand-logo-img" width="34" height="34"><span>SmartQueue</span><span class="pill accent hide-sm">Admin</span></a>
+    <nav class="nav-links" aria-label="Dashboard">
+      <a href="#counters">Counters</a>
+      <a href="#queue">Queue</a>
+      <a href="#insights">Insights</a>
+      <a href="#security">Security</a>
+    </nav>
+    <div class="nav-actions">
+      <div data-theme-switch></div>
+      <div class="row nav-auth" data-auth-slot></div>
+      <button type="button" class="btn btn-ghost btn-icon nav-toggle" aria-label="Open menu" aria-expanded="false"><svg class="i"><use href="/img/icons.svg#menu"></use></svg></button>
+    </div>
+  </header>
+
+  <main id="main" class="container app-main">
+    <section class="app-hero">
+      <div>
+        <span class="eyebrow" data-org-cat>Operations</span>
+        <h1 class="app-title" data-org-title>Dashboard</h1>
+      </div>
+      <div class="row wrap app-hero-actions">
+        <label class="sr-only" for="admin-org">Service centre</label>
+        <select id="admin-org" class="select" data-org></select>
+        <span class="pill" data-live-status><span class="live-dot off"></span>Connecting…</span>
+        <button type="button" class="btn btn-primary" data-magnetic data-auto-assign><svg class="i"><use href="/img/icons.svg#bolt"></use></svg>Auto-assign</button>
+      </div>
+    </section>
+
+    <div data-denied hidden></div>
+
+    <div data-admin-body>
+      <section class="kpi-strip" data-kpis aria-label="Today's numbers"></section>
+
+      <section class="panel card" id="counters" aria-labelledby="counters-title">
+        <div class="panel-head"><h2 id="counters-title">Counters</h2><span class="muted">Call the next checked-in token, finish it, or mark it as a no-show.</span></div>
+        <div class="acounters" data-counters></div>
+      </section>
+
+      <section class="panel card" id="queue" aria-labelledby="queue-title">
+        <div class="panel-head"><h2 id="queue-title">Today's queue</h2><span class="muted" data-queue-count></span></div>
+        <div class="table-wrap" data-queue></div>
+      </section>
+
+      <section class="admin-grid" id="insights">
+        <div class="panel card">
+          <div class="panel-head"><h2>Tokens by hour</h2><div class="legend"><span><i class="lg-a"></i>Booked</span><span><i class="lg-b"></i>Served</span></div></div>
+          <div class="chart" data-hourly></div>
+        </div>
+        <div class="panel card">
+          <div class="panel-head"><h2>Status mix</h2><span class="muted" data-noshow></span></div>
+          <div class="donut-wrap" data-donut></div>
+        </div>
+      </section>
+
+      <section class="admin-grid" id="security">
+        <div class="panel card">
+          <div class="panel-head"><h2>Geofence</h2><span class="muted">Check-in only works inside this circle.</span></div>
+          <form class="stack" data-geofence novalidate>
+            <div class="geo-grid">
+              <div class="field"><label for="g-lat">Latitude</label><input id="g-lat" class="input mono" name="lat" inputmode="decimal" required></div>
+              <div class="field"><label for="g-lng">Longitude</label><input id="g-lng" class="input mono" name="lng" inputmode="decimal" required></div>
+              <div class="field"><label for="g-radius">Radius (m)</label><input id="g-radius" class="input mono" name="radiusM" type="number" min="30" max="2000" step="10" required></div>
+            </div>
+            <div class="row wrap">
+              <button type="button" class="btn" data-use-location><svg class="i"><use href="/img/icons.svg#locate"></use></svg>Use my current location</button>
+              <span class="spacer"></span>
+              <button type="submit" class="btn btn-primary" data-admin-only>Save geofence</button>
+            </div>
+            <p class="hint muted">For a demo, stand where your visitors will be and tap "Use my current location" so check-in works from your device.</p>
+          </form>
+        </div>
+        <div class="panel card">
+          <div class="panel-head"><h2>Bot &amp; abuse signals</h2><button type="button" class="btn btn-sm" data-run-monitor data-admin-only><svg class="i"><use href="/img/icons.svg#refresh"></use></svg>Run presence check</button></div>
+          <div class="risk-summary" data-risk-summary></div>
+          <div class="table-wrap compact" data-risk></div>
+        </div>
+      </section>
+
+      <section class="panel card" aria-labelledby="audit-title">
+        <div class="panel-head"><h2 id="audit-title">Audit log</h2><span class="muted">Sign-ins, bookings and staff actions</span></div>
+        <div class="table-wrap compact" data-audit></div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

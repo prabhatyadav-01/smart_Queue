@@ -1,0 +1,232 @@
+/* ==========================================================================
+   Design tokens — three intentionally designed themes.
+   light : warm paper, ink-dark text, soft warm shadows
+   gray  : brushed aluminium mid-tone, cool shadows, deeper accent
+   dark  : near-black graphite, rim-lit edges, luminous accent
+   ========================================================================== */
+
+:root {
+  --font-sans: "Plus Jakarta Sans", "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: "Outfit", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Plus Jakarta Sans", "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 30px;
+  --r-pill: 999px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 160ms;
+  --dur-2: 280ms;
+  --dur-3: 520ms;
+
+  --container: 1200px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --nav-h: 68px;
+
+  color-scheme: light;
+}
+
+/* ---------- Light: warm paper ---------- */
+:root,
+[data-theme="light"] {
+  --bg: #f5f3ef;
+  --bg-elev: #faf9f6;
+  --surface: #ffffff;
+  --surface-2: #f2f0eb;
+  --surface-3: #e9e6df;
+  --ink: #121317;
+  --ink-2: #3c4049;
+  --muted: #676d78;
+  --faint: #9a9fa8;
+  --line: rgba(18, 19, 23, 0.08);
+  --line-strong: rgba(18, 19, 23, 0.15);
+
+  --accent: #3345e8;
+  --accent-2: #5566ff;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(51, 69, 232, 0.09);
+  --accent-glow: rgba(51, 69, 232, 0.22);
+
+  --success: #11845a;
+  --success-soft: rgba(17, 132, 90, 0.1);
+  --warn: #a8660f;
+  --warn-soft: rgba(196, 124, 20, 0.12);
+  --danger: #c23636;
+  --danger-soft: rgba(194, 54, 54, 0.1);
+
+  --glass: rgba(255, 255, 255, 0.64);
+  --glass-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --glass-edge: rgba(18, 19, 23, 0.06);
+
+  --nav-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.76) 0%, rgba(255, 255, 255, 0.42) 100%);
+  --nav-bg-scrolled: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.64) 100%);
+  --nav-border: rgba(255, 255, 255, 0.85);
+  --nav-border-scrolled: rgba(255, 255, 255, 0.95);
+  --nav-shadow: 0 16px 36px -10px rgba(40, 30, 10, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.85), inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 1);
+  --nav-sheen: radial-gradient(80% 65px at 50% 0%, rgba(255, 255, 255, 0.6), transparent 70%);
+  --nav-link-hover: rgba(51, 69, 232, 0.07);
+  --nav-link-hover-border: rgba(51, 69, 232, 0.12);
+
+  --shadow-1: 0 1px 1px rgba(40, 30, 10, 0.04), 0 2px 6px rgba(40, 30, 10, 0.05);
+  --shadow-2: 0 1px 2px rgba(40, 30, 10, 0.05), 0 10px 30px -10px rgba(40, 30, 10, 0.16);
+  --shadow-3: 0 2px 4px rgba(40, 30, 10, 0.04), 0 24px 60px -18px rgba(40, 30, 10, 0.26), 0 8px 18px -10px rgba(40, 30, 10, 0.12);
+  --shadow-float: 0 40px 80px -30px rgba(40, 30, 10, 0.35), 0 16px 30px -18px rgba(40, 30, 10, 0.2);
+
+  /* 3D lighting */
+  --spec: rgba(255, 255, 255, 0.95);
+  --spec-strength: 0.9;
+  --rim: rgba(255, 255, 255, 0.9);
+  --token-face: linear-gradient(155deg, #ffffff 0%, #f6f4ef 60%, #efece5 100%);
+  --token-edge: #dcd8cf;
+  --ground: radial-gradient(60% 50% at 50% 50%, rgba(40, 30, 10, 0.16), transparent 70%);
+
+  --hero-wash: radial-gradient(60% 160px at 50% 0%, rgba(51, 69, 232, 0.08), transparent 70%),
+    radial-gradient(60% 60% at 78% 20%, rgba(85, 102, 255, 0.12), transparent 60%),
+    radial-gradient(40% 40% at 10% 90%, rgba(255, 170, 90, 0.1), transparent 60%);
+  --grid-line: rgba(18, 19, 23, 0.045);
+  --selection: rgba(51, 69, 232, 0.18);
+  --focus: 0 0 0 3px rgba(51, 69, 232, 0.35);
+  --chart-1: #3345e8;
+  --chart-2: #b9c0f7;
+  --chart-3: #11845a;
+  --chart-4: #c47c14;
+  color-scheme: light;
+}
+
+/* ---------- Gray: brushed aluminium ---------- */
+[data-theme="gray"] {
+  --bg: #d3d6da;
+  --bg-elev: #dcdfe2;
+  --surface: #e6e8eb;
+  --surface-2: #d9dce0;
+  --surface-3: #c9cdd2;
+  --ink: #111316;
+  --ink-2: #2f333a;
+  --muted: #545a63;
+  --faint: #7b818a;
+  --line: rgba(17, 19, 22, 0.1);
+  --line-strong: rgba(17, 19, 22, 0.18);
+
+  --accent: #2a3cc8;
+  --accent-2: #3d50e0;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(42, 60, 200, 0.1);
+  --accent-glow: rgba(42, 60, 200, 0.25);
+
+  --success: #0c6f4b;
+  --success-soft: rgba(12, 111, 75, 0.12);
+  --warn: #8a5406;
+  --warn-soft: rgba(138, 84, 6, 0.13);
+  --danger: #a82828;
+  --danger-soft: rgba(168, 40, 40, 0.12);
+
+  --glass: rgba(232, 234, 237, 0.58);
+  --glass-strong: rgba(236, 238, 240, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-edge: rgba(17, 19, 22, 0.08);
+
+  --nav-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.6) 0%, rgba(215, 219, 225, 0.42) 100%);
+  --nav-bg-scrolled: linear-gradient(135deg, rgba(255, 255, 255, 0.78) 0%, rgba(210, 215, 222, 0.65) 100%);
+  --nav-border: rgba(255, 255, 255, 0.65);
+  --nav-border-scrolled: rgba(255, 255, 255, 0.82);
+  --nav-shadow: 0 18px 40px -10px rgba(15, 20, 30, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.55), inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.85);
+  --nav-sheen: radial-gradient(80% 65px at 50% 0%, rgba(255, 255, 255, 0.45), transparent 70%);
+  --nav-link-hover: rgba(42, 60, 200, 0.09);
+  --nav-link-hover-border: rgba(42, 60, 200, 0.16);
+
+  --shadow-1: 0 1px 1px rgba(15, 20, 30, 0.07), 0 2px 6px rgba(15, 20, 30, 0.07);
+  --shadow-2: 0 1px 2px rgba(15, 20, 30, 0.08), 0 12px 30px -10px rgba(15, 20, 30, 0.24);
+  --shadow-3: 0 2px 4px rgba(15, 20, 30, 0.07), 0 26px 60px -18px rgba(15, 20, 30, 0.36), 0 8px 18px -10px rgba(15, 20, 30, 0.18);
+  --shadow-float: 0 40px 80px -28px rgba(15, 20, 30, 0.45), 0 16px 30px -18px rgba(15, 20, 30, 0.26);
+
+  --spec: rgba(255, 255, 255, 0.75);
+  --spec-strength: 0.7;
+  --rim: rgba(255, 255, 255, 0.65);
+  --token-face: linear-gradient(155deg, #eef0f2 0%, #e1e4e7 55%, #d4d8dc 100%);
+  --token-edge: #b9bec5;
+  --ground: radial-gradient(60% 50% at 50% 50%, rgba(15, 20, 30, 0.22), transparent 70%);
+
+  --hero-wash: radial-gradient(60% 60% at 78% 20%, rgba(255, 255, 255, 0.45), transparent 60%),
+    radial-gradient(40% 40% at 12% 88%, rgba(42, 60, 200, 0.08), transparent 60%);
+  --grid-line: rgba(17, 19, 22, 0.05);
+  --selection: rgba(42, 60, 200, 0.2);
+  --focus: 0 0 0 3px rgba(42, 60, 200, 0.38);
+  --chart-1: #2a3cc8;
+  --chart-2: #9aa3d8;
+  --chart-3: #0c6f4b;
+  --chart-4: #8a5406;
+  color-scheme: light;
+}
+
+/* ---------- Dark: graphite with rim light ---------- */
+[data-theme="dark"] {
+  --bg: #09090c;
+  --bg-elev: #0e0f13;
+  --surface: #131419;
+  --surface-2: #191b21;
+  --surface-3: #22252c;
+  --ink: #eceef2;
+  --ink-2: #b9bdc6;
+  --muted: #8a909b;
+  --faint: #5d626c;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.13);
+
+  --accent: #8492ff;
+  --accent-2: #a3adff;
+  --accent-ink: #0b0c10;
+  --accent-soft: rgba(132, 146, 255, 0.12);
+  --accent-glow: rgba(132, 146, 255, 0.3);
+
+  --success: #43d69b;
+  --success-soft: rgba(67, 214, 155, 0.12);
+  --warn: #f0b95a;
+  --warn-soft: rgba(240, 185, 90, 0.12);
+  --danger: #ff7b7b;
+  --danger-soft: rgba(255, 123, 123, 0.12);
+
+  --glass: rgba(20, 21, 26, 0.6);
+  --glass-strong: rgba(22, 23, 28, 0.84);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-edge: rgba(255, 255, 255, 0.05);
+
+  --nav-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(14, 16, 24, 0.55) 100%);
+  --nav-bg-scrolled: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.04) 40%, rgba(10, 12, 18, 0.82) 100%);
+  --nav-border: rgba(255, 255, 255, 0.16);
+  --nav-border-scrolled: rgba(255, 255, 255, 0.22);
+  --nav-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.07), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.45);
+  --nav-sheen: radial-gradient(80% 65px at 50% 0%, rgba(255, 255, 255, 0.22), transparent 70%);
+  --nav-link-hover: rgba(255, 255, 255, 0.08);
+  --nav-link-hover-border: rgba(255, 255, 255, 0.14);
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.5), 0 14px 36px -12px rgba(0, 0, 0, 0.7);
+  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.4), 0 30px 70px -20px rgba(0, 0, 0, 0.85);
+  --shadow-float: 0 50px 90px -30px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.04);
+
+  --spec: rgba(255, 255, 255, 0.1);
+  --spec-strength: 0.5;
+  --rim: rgba(255, 255, 255, 0.12);
+  --token-face: linear-gradient(155deg, #1f2128 0%, #16171c 60%, #111216 100%);
+  --token-edge: #0a0b0e;
+  --ground: radial-gradient(60% 50% at 50% 50%, rgba(132, 146, 255, 0.14), transparent 70%);
+
+  --hero-wash: radial-gradient(60% 160px at 50% 0%, rgba(132, 146, 255, 0.18), transparent 70%),
+    radial-gradient(55% 55% at 78% 18%, rgba(132, 146, 255, 0.14), transparent 60%),
+    radial-gradient(35% 35% at 8% 90%, rgba(67, 214, 155, 0.06), transparent 60%);
+  --grid-line: rgba(255, 255, 255, 0.035);
+  --selection: rgba(132, 146, 255, 0.28);
+  --focus: 0 0 0 3px rgba(132, 146, 255, 0.45);
+  --chart-1: #8492ff;
+  --chart-2: #3a3f63;
+  --chart-3: #43d69b;
+  --chart-4: #f0b95a;
+  color-scheme: dark;
+}

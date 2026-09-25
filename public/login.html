@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sign in — SmartQueue</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/app.css">
+  <script type="module" src="/js/pages/login.js"></script>
+</head>
+<body class="auth-page">
+  <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+  <header class="nav">
+    <a class="brand" href="/" aria-label="SmartQueue home">
+      <img src="/img/logo.png" alt="SmartQueue" class="brand-logo-img" width="34" height="34">
+      <span>SmartQueue</span>
+    </a>
+    <div class="nav-actions">
+      <div data-theme-switch></div>
+      <a class="btn btn-ghost btn-sm" href="/">Back to home</a>
+    </div>
+  </header>
+
+  <main class="container auth-layout">
+    <section class="auth-brand" aria-hidden="true">
+      <div class="auth-hero-logo-box">
+        <img src="/img/logo.png" alt="SmartQueue Logo" class="auth-hero-logo" width="96" height="96">
+      </div>
+      <div class="auth-stack" data-auth-stack>
+        <div class="mini-token t1"><span class="eyebrow">Hospital</span><b class="mono">M-042</b></div>
+        <div class="mini-token t2"><span class="eyebrow">Passport</span><b class="mono">P-025</b></div>
+        <div class="mini-token t3"><span class="eyebrow">Bank</span><b class="mono">B-107</b></div>
+      </div>
+      <h2>Your place in line,<br><span class="soft">verified.</span></h2>
+      <ul class="auth-points">
+        <li><svg class="i"><use href="/img/icons.svg#fingerprint"></use></svg>Email OTP and two-step sign-in keeps other people from booking in your name.</li>
+        <li><svg class="i"><use href="/img/icons.svg#cursor"></use></svg>Bot detection stops scripts from taking every token.</li>
+        <li><svg class="i"><use href="/img/icons.svg#lock"></use></svg>Only trusted email accounts (@gmail.com, @outlook.com, @yahoo.com) are accepted.</li>
+      </ul>
+    </section>
+
+    <section class="auth-card card" aria-live="polite">
+      <!-- Step 1: credentials -->
+      <div data-step="credentials">
+        <h1 class="auth-title" data-title>Welcome back</h1>
+        <p class="muted" data-subtitle>Sign in with your trusted email or Google account to get and track your tokens.</p>
+        <div class="segmented auth-tabs" role="tablist" aria-label="Account">
+          <button type="button" role="tab" aria-selected="true" data-tab="login">Sign in</button>
+          <button type="button" role="tab" aria-selected="false" data-tab="register">Create account</button>
+        </div>
+
+        <div class="google-slot" data-google></div>
+        <div class="or" data-or><span>or continue with email</span></div>
+
+        <form class="stack auth-form" data-form="login" novalidate>
+          <div class="field"><label for="li-email">Email (e.g. yourname@gmail.com)</label><input id="li-email" class="input" type="email" name="email" placeholder="name@gmail.com" autocomplete="username" required></div>
+          <div class="field"><label for="li-pass">Password</label><input id="li-pass" class="input" type="password" name="password" autocomplete="current-password" required></div>
+          <input class="hp-field" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <p class="form-error" data-error role="alert" hidden></p>
+          <button class="btn btn-primary btn-lg" type="submit">Sign in with email</button>
+        </form>
+
+        <form class="stack auth-form" data-form="register" novalidate hidden>
+          <div class="field"><label for="re-name">Full name</label><input id="re-name" class="input" name="name" autocomplete="name" required minlength="2" maxlength="60"></div>
+          <div class="field"><label for="re-email">Email (e.g. yourname@gmail.com)</label><input id="re-email" class="input" type="email" name="email" placeholder="name@gmail.com" autocomplete="email" required></div>
+          <div class="field">
+            <label for="re-pass">Password</label>
+            <input id="re-pass" class="input" type="password" name="password" autocomplete="new-password" required minlength="10">
+            <div class="strength" data-strength><i></i><i></i><i></i><i></i></div>
+            <span class="hint" data-strength-label>At least 10 characters. A short phrase works well.</span>
+          </div>
+          <input class="hp-field" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <p class="form-error" data-error role="alert" hidden></p>
+          <button class="btn btn-primary btn-lg" type="submit">Create account &amp; Get OTP</button>
+        </form>
+        <p class="fine"><svg class="i"><use href="/img/icons.svg#shield"></use></svg>Protected by behavioural bot detection. Trusted emails (@gmail.com, etc.) receive an instant OTP.</p>
+      </div>
+
+      <!-- Step 2a: authenticator enrolment (if required) -->
+      <div data-step="totp_setup" hidden>
+        <span class="pill accent">Step 2 of 2</span>
+        <h1 class="auth-title">Secure your account</h1>
+        <p class="muted">Link an authenticator app, such as Google Authenticator, Microsoft Authenticator or Authy. You'll enter a code from it each time you sign in.</p>
+        <div class="enrol">
+          <div class="qr-box" data-qr><div class="skeleton qr-skel"></div></div>
+          <div class="stack enrol-side">
+            <ol class="enrol-steps">
+              <li>Open your authenticator app and tap <b>+</b>.</li>
+              <li>Scan the QR code, or type the key below.</li>
+              <li>Enter the 6-digit code it shows.</li>
+            </ol>
+            <div class="secret-row"><code class="mono" data-secret>••••</code><button type="button" class="btn btn-sm" data-copy><svg class="i"><use href="/img/icons.svg#copy"></use></svg>Copy</button></div>
+          </div>
+        </div>
+        <form class="stack" data-form="totp_setup" novalidate>
+          <label class="sr-only" for="otp-setup">6-digit code</label>
+          <input id="otp-setup" class="input otp" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="\d{6}" maxlength="6" placeholder="000000" required>
+          <p class="form-error" data-error role="alert" hidden></p>
+          <button class="btn btn-primary btn-lg" type="submit">Verify &amp; finish</button>
+        </form>
+      </div>
+
+      <!-- Step 2b: OTP verification code -->
+      <div data-step="totp" hidden>
+        <span class="state-icon big"><svg class="i"><use href="/img/icons.svg#shield"></use></svg></span>
+        <h1 class="auth-title" data-otp-title>Enter verification code</h1>
+        <p class="muted" data-otp-desc>Enter the 6-digit verification code sent to your email to complete sign in.</p>
+        <div class="otp-banner" data-otp-banner hidden></div>
+        <form class="stack" data-form="totp" novalidate>
+          <label class="sr-only" for="otp">6-digit code</label>
+          <input id="otp" class="input otp" name="code" inputmode="numeric" autocomplete="one-time-code" pattern="\d{6}" maxlength="6" placeholder="000000" required>
+          <p class="form-error" data-error role="alert" hidden></p>
+          <button class="btn btn-primary btn-lg" type="submit">Verify &amp; Sign in</button>
+        </form>
+        <div class="row center-row" style="gap: 12px; margin-top: 10px;">
+          <button type="button" class="btn btn-ghost btn-sm" data-resend>Resend code</button>
+          <button type="button" class="btn btn-ghost btn-sm switch-account" data-switch>Use a different account</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

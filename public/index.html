@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SmartQueue — Skip the Queue. Not the Service.</title>
+  <meta name="description" content="Digital tokens, appointments and live queues for government offices, hospitals, banks and corporate desks.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <script src="/js/theme-boot.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/landing.css">
+  <script src="/vendor/lenis/lenis.min.js" defer></script>
+  <script src="/shared/botScore.js" defer></script>
+  <script type="module" src="/js/pages/landing.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav" data-nav>
+    <a class="brand" href="/" aria-label="SmartQueue home"><img src="/img/logo.png" alt="SmartQueue" class="brand-logo-img" width="34" height="34"><span>SmartQueue</span></a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#get-token">Get token</a>
+      <a href="#live">Live queue</a>
+      <a href="#book">Appointments</a>
+      <a href="#counters">Counters</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#trust">Security</a>
+    </nav>
+    <div class="nav-actions">
+      <div data-theme-switch></div>
+      <div class="row nav-auth" data-auth-slot></div>
+      <button type="button" class="btn btn-ghost btn-icon nav-toggle" aria-label="Open menu" aria-expanded="false"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#menu"></use></svg></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- 1 · HERO -->
+    <section class="hero" id="top">
+      <div class="hero-wash" aria-hidden="true"></div>
+      <div class="hero-grid-lines" aria-hidden="true" data-parallax="-0.08"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container hero-layout">
+        <div class="hero-copy">
+
+          <h1 class="reveal"><span class="line">Skip the Queue.</span><span class="line soft">Not the Service.</span></h1>
+          <p class="lede hero-lede reveal"><strong>Your time belongs to your life, not a waiting room</strong>—SmartQueue holds your place silently so you step forward only when your turn arrives.</p>
+          <div class="row wrap hero-ctas reveal">
+            <a class="btn btn-primary btn-lg" data-magnetic href="/app.html">Get a token <svg class="i i-arrow" aria-hidden="true"><use href="/img/icons.svg#arrow-right"></use></svg></a>
+            <a class="btn btn-lg" data-magnetic href="#live">Watch the live queue</a>
+          </div>
+          <dl class="hero-stats reveal" data-stagger>
+            <div><dt>Waiting right now</dt><dd class="tnum" data-count="waiting">0</dd></div>
+            <div><dt>Counters open</dt><dd class="tnum" data-count="counters">0</dd></div>
+            <div><dt>Typical wait</dt><dd class="tnum"><span data-count="wait">0</span><small>min</small></dd></div>
+          </dl>
+        </div>
+
+        <div class="hero-stage" data-stage aria-hidden="true">
+          <div class="stage-inner">
+            <div class="stage-ground"></div>
+            <div class="lane-plate layer">
+              <div class="lane-head"><span>Up next</span><span class="live-dot"></span></div>
+              <ol class="lane-list" data-hero-lane>
+                <li><span class="mono">M-038</span><i></i></li>
+                <li><span class="mono">L-112</span><i></i></li>
+                <li><span class="mono">K-021</span><i></i></li>
+                <li><span class="mono">M-039</span><i></i></li>
+              </ol>
+            </div>
+            <div class="token3d layer">
+              <div class="token-shine"></div>
+              <div class="token-top"><span class="eyebrow">Your token</span><span class="pill success" data-hero-status>Checked in</span></div>
+              <div class="token-code mono" data-hero-token>M-042</div>
+              <div class="token-sub"><span>General Medicine</span><span>City General Hospital</span></div>
+              <div class="token-progress">
+                <div class="dots" data-hero-dots><i></i><i></i><i></i><b></b></div>
+                <span data-hero-eta>3 ahead · ~6 min</span>
+              </div>
+              <div class="token-perf"></div>
+              <div class="token-foot mono"><span>11:40</span><span>Counter —</span></div>
+            </div>
+            <div class="float-chip layer chip-a"><span class="live-dot"></span>Now serving <b class="mono" data-hero-serving>M-037</b></div>
+            <div class="float-chip layer chip-b"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#pin"></use></svg>Inside the hospital · 42 m</div>
+            <div class="float-chip layer chip-c"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#bell"></use></svg>We'll buzz you 2 turns ahead</div>
+          </div>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#get-token" aria-label="Scroll to content"><span></span></a>
+    </section>
+
+    <!-- 2 · GET TOKEN -->
+    <section class="section" id="get-token">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container split">
+        <div class="section-head">
+          <span class="eyebrow reveal"><span class="idx">01</span>Get Token</span>
+          <h2 class="reveal">A token in three taps.</h2>
+          <p class="lede reveal">Choose a place and a service, and we'll give you the next free token for today. You'll see the exact number and time before you confirm.</p>
+          <ol class="steps reveal" data-stagger>
+            <li><span class="step-n">1</span><div><strong>Pick a place</strong><p>Government offices, hospitals, banks and company front desks.</p></div></li>
+            <li><span class="step-n">2</span><div><strong>Choose the service</strong><p>Each counter type has its own queue and time per visit.</p></div></li>
+            <li><span class="step-n">3</span><div><strong>Get your token</strong><p>Your token number comes from your time slot, so it only changes if you change it.</p></div></li>
+          </ol>
+        </div>
+        <div class="card kiosk reveal" data-kiosk>
+          <div class="kiosk-head">
+            <div class="segmented" role="tablist" aria-label="Category" data-kiosk-cats></div>
+          </div>
+          <div class="kiosk-orgs" data-kiosk-orgs></div>
+          <div class="kiosk-services" data-kiosk-services></div>
+          <div class="kiosk-result" data-kiosk-result></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · LIVE QUEUE -->
+    <section class="section section-alt" id="live">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container">
+        <div class="section-head centered">
+          <span class="eyebrow reveal"><span class="idx">02</span>Live Queue Tracker</span>
+          <h2 class="reveal">See the queue as it moves.</h2>
+          <p class="lede reveal">This is live data, not a mock-up. Tokens are called, counters change, and the list updates the moment anything happens.</p>
+        </div>
+        <div class="board card reveal">
+          <div class="board-bar">
+            <label class="sr-only" for="live-org">Service centre</label>
+            <select id="live-org" class="select" data-live-org></select>
+            <span class="spacer"></span>
+            <span class="pill" data-live-status><span class="live-dot off"></span>Connecting…</span>
+          </div>
+          <div class="board-body" data-live-body></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 · APPOINTMENTS -->
+    <section class="section" id="book">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container split reverse">
+        <div class="section-head">
+          <span class="eyebrow reveal"><span class="idx">03</span>Appointment Booking</span>
+          <h2 class="reveal">Pick a time. Keep your place.</h2>
+          <p class="lede reveal">Book up to two weeks ahead. Your token number is set by your slot, so if you reschedule, only your number changes and everyone else stays where they are.</p>
+          <div class="resched-demo reveal" aria-hidden="true">
+            <div class="rd-row"><span class="rd-label">10:00</span><span class="tok mono">P-025</span><span class="tok mono moving"><b>P-026</b><b>P-050</b></span><span class="tok mono">P-027</span></div>
+            <div class="rd-row"><span class="rd-label">11:00</span><span class="tok mono">P-049</span><span class="tok mono ghost">P-050</span><span class="tok mono">P-051</span></div>
+            <p class="muted rd-cap">Rescheduling P-026 to 11:00 turns it into P-050. P-025 and P-027 stay exactly as they were.</p>
+          </div>
+        </div>
+        <div class="card booker reveal" data-booker>
+          <div class="booker-top">
+            <label class="sr-only" for="book-service">Service</label>
+            <select id="book-service" class="select" data-book-service></select>
+          </div>
+          <div class="date-strip" role="tablist" aria-label="Date" data-book-dates></div>
+          <div class="slot-grid" data-book-slots></div>
+          <div class="slot-legend"><span><i class="lg-free"></i>Available</span><span><i class="lg-few"></i>Filling up</span><span><i class="lg-full"></i>Full</span></div>
+          <div class="booker-foot" data-book-summary></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5 · COUNTERS -->
+    <section class="section section-alt" id="counters">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container split">
+        <div class="section-head">
+          <span class="eyebrow reveal"><span class="idx">04</span>Counter Assignment</span>
+          <h2 class="reveal">The next person who is actually here.</h2>
+          <p class="lede reveal">Counters only call people who are on site. If you're running late, the counter moves on to the next person instead of waiting.</p>
+          <ul class="rules reveal" data-stagger>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#pin"></use></svg><div><strong>Present first</strong><p>Only tokens checked in by location or at the desk can be called.</p></div></li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#clock"></use></svg><div><strong>Earliest slot wins</strong><p>Checked-in tokens are called in slot order.</p></div></li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#users"></use></svg><div><strong>Least-busy counter</strong><p>Auto-assign fills free counters, starting with the one that has served the fewest people.</p></div></li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#repeat"></use></svg><div><strong>Missed call? You move back.</strong><p>Your token moves to a later slot. After two misses it expires.</p></div></li>
+          </ul>
+        </div>
+        <div class="counters-live reveal" data-counters-live></div>
+      </div>
+    </section>
+
+    <!-- 6 · NOTIFICATIONS -->
+    <section class="section" id="notify">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container split reverse">
+        <div class="section-head">
+          <span class="eyebrow reveal"><span class="idx">05</span>Smart Notifications</span>
+          <h2 class="reveal">It tells you when to leave. And when to walk in.</h2>
+          <p class="lede reveal">Location check-in, reminders and turn alerts all appear in the app and as browser notifications. We use your location only to confirm you've arrived.</p>
+          <div class="notify-points reveal" data-stagger>
+            <div><b>15 min</b><span>reminder if you're not on site yet</span></div>
+            <div><b>10 min</b><span>grace period before your token moves</span></div>
+            <div><b>1 tap</b><span>to reschedule if your plans change</span></div>
+          </div>
+        </div>
+        <div class="phone-wrap reveal">
+          <div class="phone" data-tilt-phone>
+            <div class="phone-notch"></div>
+            <div class="phone-time mono" data-phone-time>09:41</div>
+            <div class="notif-stack" data-notif-stack aria-live="off"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 · ADMIN DASHBOARD -->
+    <section class="section section-alt" id="dashboard">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container">
+        <div class="section-head centered">
+          <span class="eyebrow reveal"><span class="idx">06</span>Admin Dashboard</span>
+          <h2 class="reveal">Run the whole floor from one screen.</h2>
+          <p class="lede reveal">Call, finish or reassign tokens. Pause counters, move a geofence, and watch for bot activity. The preview below uses live data for the selected centre.</p>
+        </div>
+        <div class="dash-preview glass reveal" data-dash>
+          <div class="dash-side" aria-hidden="true">
+            <img src="/img/logo.png" alt="SmartQueue" class="brand-logo-img" width="30" height="30">
+            <i class="on"></i><i></i><i></i><i></i>
+          </div>
+          <div class="dash-main">
+            <div class="dash-kpis" data-dash-kpis></div>
+            <div class="dash-grid">
+              <div class="dash-card">
+                <div class="row"><strong>Queue length</strong><span class="spacer"></span><span class="pill"><span class="live-dot"></span>this session</span></div>
+                <svg class="spark" viewBox="0 0 600 160" preserveAspectRatio="none" data-dash-spark role="img" aria-label="Queue length over time"></svg>
+              </div>
+              <div class="dash-card">
+                <strong>Counters</strong>
+                <div class="util" data-dash-util></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="center reveal"><a class="btn btn-lg" data-magnetic href="/admin.html">Open the dashboard <svg class="i i-arrow" aria-hidden="true"><use href="/img/icons.svg#arrow-right"></use></svg></a></div>
+      </div>
+    </section>
+
+    <!-- 8 · RELIABILITY -->
+    <section class="section" id="reliability">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container">
+        <div class="section-head centered">
+          <span class="eyebrow reveal"><span class="idx">07</span>Reliability &amp; Scalability</span>
+          <h2 class="reveal">Built for the Monday-morning rush.</h2>
+          <p class="lede reveal">Two people can never get the same token, even if they tap at the same moment. The live screen keeps working through network drops.</p>
+        </div>
+        <div class="features" data-stagger>
+          <article class="feature card reveal"><span class="f-icon"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#lock"></use></svg></span><h3>Atomic token issue</h3><p>Each seat is claimed inside a single database transaction, and a unique index rejects any second claim on the same seat.</p></article>
+          <article class="feature card reveal"><span class="f-icon"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#activity"></use></svg></span><h3>Real-time without polling</h3><p>Server-Sent Events push changes as they happen, batched per centre and reconnecting on their own.</p></article>
+          <article class="feature card reveal"><span class="f-icon"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#layers"></use></svg></span><h3>Scale-out ready</h3><p>Services are stateless apart from the event hub, which can be swapped for Redis pub/sub to run across many servers.</p></article>
+          <article class="feature card reveal"><span class="f-icon"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#shield"></use></svg></span><h3>Rate limited</h3><p>Separate limits for sign-in, codes, bookings and location updates, by IP address and by user.</p></article>
+          <article class="feature card reveal"><span class="f-icon"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#server"></use></svg></span><h3>Self-healing jobs</h3><p>A background monitor sends reminders, moves tokens for people who haven't arrived, and clears out old ones.</p></article>
+          <article class="feature card reveal probe" data-probe><span class="f-icon"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#bolt"></use></svg></span><h3>Your round-trip</h3><p class="probe-val"><b class="tnum" data-probe-ms>—</b><span>ms</span></p><p class="muted" data-probe-note>Measured from this browser to the API.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 · ABUSE PREVENTION -->
+    <section class="section section-alt" id="trust">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container split">
+        <div class="section-head">
+          <span class="eyebrow reveal"><span class="idx">08</span>Abuse Prevention</span>
+          <h2 class="reveal">Built for people, not bots.</h2>
+          <p class="lede reveal">We look at how the cursor moves: its speed, curves, small jitters, and how it approaches a click. Real people move differently from scripts. Try it yourself.</p>
+          <ul class="guards reveal" data-stagger>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#fingerprint"></use></svg>Google sign-in or authenticator app (TOTP) required</li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#cursor"></use></svg>Server-side cursor and typing-rhythm analysis</li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#hand"></use></svg>Press-and-hold check timed by the server</li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#ticket"></use></svg>One token per place per day · max 3 active</li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#alert"></use></svg>Repeated no-shows pause booking for 7 days</li>
+            <li><svg class="i" aria-hidden="true"><use href="/img/icons.svg#pin"></use></svg>Check-in only works inside the geofence</li>
+          </ul>
+        </div>
+        <div class="card meter-card reveal" data-meter>
+          <div class="row"><strong>Human signal</strong><span class="spacer"></span><span class="pill" data-meter-verdict>Move your cursor</span></div>
+          <div class="gauge" data-gauge>
+            <svg viewBox="0 0 200 120" aria-hidden="true">
+              <path class="g-track" d="M20 110 A80 80 0 0 1 180 110" />
+              <path class="g-fill" d="M20 110 A80 80 0 0 1 180 110" pathLength="100" data-gauge-fill />
+            </svg>
+            <div class="gauge-val"><b class="tnum" data-meter-score>—</b><span>/ 100</span></div>
+          </div>
+          <div class="meter-stats">
+            <div><span>Samples</span><b class="tnum" data-meter-samples>0</b></div>
+            <div><span>Flags</span><b data-meter-flags>none</b></div>
+          </div>
+          <p class="muted meter-tip">Try drawing a perfectly straight line at a steady speed, the way a script would, and watch the score drop.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 · FINAL CTA -->
+    <section class="section cta" id="start">
+      <div class="section-grid-lines" aria-hidden="true"></div>
+      <canvas class="particle-drift-canvas" data-particle-drift aria-hidden="true"></canvas>
+      <div class="container">
+        <div class="cta-card glass reveal">
+          <div class="cta-tokens" aria-hidden="true" data-parallax="0.06"><span class="mono">A-014</span><span class="mono">M-042</span><span class="mono">P-025</span></div>
+          <h2>Your time matters.<br><span class="soft">So does everyone else's.</span></h2>
+          <p class="lede">Sign in with Google or an authenticator app and get your first token in under a minute.</p>
+          <div class="row wrap center-row">
+            <a class="btn btn-primary btn-lg" data-magnetic href="/app.html">Get started <svg class="i i-arrow" aria-hidden="true"><use href="/img/icons.svg#arrow-right"></use></svg></a>
+            <a class="btn btn-lg btn-ghost" href="/admin.html">I run a service centre</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container row">
+      <span class="brand"><img src="/img/logo.png" alt="SmartQueue" class="brand-logo-img" width="28" height="28">SmartQueue</span>
+      <span>Digital queues for public &amp; institutional services.</span>
+      <span class="muted">Location is used only to confirm arrival.</span>
+    </div>
+  </footer>
+</body>
+</html>
