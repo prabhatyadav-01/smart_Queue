@@ -36,12 +36,17 @@ module.exports = async function handler(req, res) {
   try {
     const app = await getApp();
 
-    // Normalize URL path for Express routing
-    // When rewritten in Vercel, req.url may be '/config', '/api/config', or '/api/index.js'
-    const matchedPath = req.headers['x-matched-path'];
-    if (matchedPath && matchedPath.startsWith('/api')) {
+    // In Vercel serverless functions:
+    // req.url might be '/api/config', '/config', or have req.query.path
+    if (req.query && req.query.path) {
+      const subpath = Array.isArray(req.query.path) ? req.query.path.join('/') : req.query.path;
       const queryIdx = req.url.indexOf('?');
-      req.url = matchedPath + (queryIdx !== -1 ? req.url.slice(queryIdx) : '');
+      const search = queryIdx !== -1 ? req.url.slice(queryIdx) : '';
+      req.url = `/api/${subpath}${search}`;
+    } else if (req.headers['x-matched-path'] && req.headers['x-matched-path'].startsWith('/api')) {
+      const queryIdx = req.url.indexOf('?');
+      const search = queryIdx !== -1 ? req.url.slice(queryIdx) : '';
+      req.url = req.headers['x-matched-path'] + search;
     } else if (!req.url.startsWith('/api')) {
       req.url = '/api' + (req.url.startsWith('/') ? req.url : '/' + req.url);
     }
