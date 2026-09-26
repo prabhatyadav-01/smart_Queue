@@ -10,6 +10,7 @@ html {
   -webkit-text-size-adjust: 100%; 
   text-size-adjust: 100%; 
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
   width: 100%;
 }
@@ -29,6 +30,7 @@ body {
   text-rendering: optimizeLegibility;
   font-feature-settings: "ss01", "cv11";
   overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
   width: 100%;
   animation: page-in var(--dur-3) var(--ease-out) both;
@@ -94,7 +96,7 @@ p { margin: 0; color: var(--ink-2); }
 .tnum { font-variant-numeric: tabular-nums; }
 
 /* ---------- Layout ---------- */
-.container { width: 100%; max-width: var(--container); padding-inline: var(--gutter); margin-inline: auto; box-sizing: border-box; }
+.container { width: 100%; max-width: var(--container); padding-inline: var(--gutter); margin-inline: auto; box-sizing: border-box; min-width: 0; }
 .stack { display: flex; flex-direction: column; gap: var(--gap, 16px); }
 .row { display: flex; align-items: center; gap: var(--gap, 12px); }
 .row.wrap { flex-wrap: wrap; }
@@ -239,6 +241,8 @@ p { margin: 0; color: var(--ink-2); }
   box-shadow: var(--shadow-1), inset 0 1px 0 var(--rim);
   transition: transform var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out), background-color var(--dur-1), opacity var(--dur-1);
   will-change: transform;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .btn:hover { box-shadow: var(--shadow-2), inset 0 1px 0 var(--rim); }
 .btn:active { transform: translateY(1px) scale(0.985); }
@@ -304,6 +308,8 @@ p { margin: 0; color: var(--ink-2); }
   display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: var(--r-pill);
   border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); cursor: pointer; font-size: 0.9rem;
   transition: background-color var(--dur-1), border-color var(--dur-1), color var(--dur-1), transform var(--dur-2) var(--ease-out);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .chip:hover { border-color: var(--accent); color: var(--ink); }
 .chip[aria-pressed="true"], .chip[aria-selected="true"] {
