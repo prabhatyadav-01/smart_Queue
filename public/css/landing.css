@@ -389,11 +389,11 @@
 .gauge-val { position: absolute; left: 0; right: 0; bottom: 4px; text-align: center; }
 .gauge-val b { font-size: 2.8rem; font-weight: 600; letter-spacing: -0.04em; color: var(--ink); }
 .gauge-val span { color: var(--muted); margin-left: 4px; }
-.meter-stats { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; }
-.meter-stats div { padding: 12px 14px; border-radius: var(--r-md); background: var(--bg-elev); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 2px; }
-.meter-stats span { font-size: 0.76rem; color: var(--muted); }
-.meter-stats b { font-size: 0.9rem; color: var(--ink); font-weight: 550; }
-.meter-tip { font-size: 0.84rem; }
+.meter-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.meter-stats div { padding: 14px 16px; border-radius: var(--r-md); background: var(--bg-elev); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; }
+.meter-stats span { font-size: 0.78rem; color: var(--muted); }
+.meter-stats b { font-size: 0.92rem; color: var(--ink); font-weight: 550; }
+.meter-tip { font-size: 0.86rem; color: var(--ink-2); line-height: 1.5; }
 
 /* ---------- CTA ---------- */
 .cta-card { position: relative; overflow: hidden; padding: clamp(48px, 8vw, 96px) clamp(24px, 6vw, 80px); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px; }
@@ -429,6 +429,12 @@
   .org-side { display: none; }
   .org-opt { grid-template-columns: auto 1fr; }
   .phone { width: 270px; height: 540px; }
+  .serving-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .serving-code { font-size: 1.6rem; }
+  .meter-card { padding: 20px 16px; }
+  .gauge { width: min(280px, 100%); }
+  .gauge-val b { font-size: 2.2rem; }
+  .guards li { font-size: 0.88rem; gap: 10px; }
 }
 @media (max-width: 560px) {
   .kiosk-head .segmented {
@@ -462,4 +468,8 @@
   
   .hero-stats dd { font-size: 1.7rem; }
   .hero-copy h1 { font-size: 2.2rem; }
+  .section { padding: clamp(48px, 8vw, 96px) 0; }
+  .meter-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .meter-stats div { padding: 12px; }
+  .serving-grid { grid-template-columns: 1fr; }
 }

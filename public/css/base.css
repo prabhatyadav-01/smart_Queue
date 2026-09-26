@@ -180,7 +180,7 @@ p { margin: 0; color: var(--ink-2); }
   color: var(--accent);
   font-weight: 600;
 }
-.nav-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.nav-actions { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .nav .nav-toggle { display: none; }
 @media (max-width: 900px) {
   .nav-links {
@@ -541,11 +541,19 @@ dialog.modal::backdrop { background: rgba(8, 9, 12, 0.42); backdrop-filter: blur
 
 @media (max-width: 640px) {
   .brand span { display: none; }
-  .nav { padding: 0 10px; gap: 8px; }
+  .nav { padding: 0 10px; gap: 6px; height: 56px; }
   .nav-actions { gap: 4px; }
-  .nav .btn:not(.btn-icon) { padding: 0 12px; font-size: 0.85rem; height: 38px; }
+  .nav .btn:not(.btn-icon) { padding: 0 10px; font-size: 0.82rem; height: 34px; }
+  .nav .btn-icon { width: 34px; height: 34px; }
+  .avatar { width: 30px; height: 30px; font-size: 0.7rem; }
+  .theme-switch { height: 30px; grid-auto-columns: 28px; padding: 2px; }
+  .theme-switch .thumb { width: 28px; height: 24px; top: 2px; left: 2px; transform: translateX(calc(var(--i, 0) * 28px)); }
+  .theme-switch .i { width: 14px; height: 14px; }
 }
 
 @media (max-width: 420px) {
   .nav-auth .btn-primary { display: none; }
+  .nav { padding: 0 8px; gap: 4px; }
+  .theme-switch { height: 28px; grid-auto-columns: 26px; }
+  .theme-switch .thumb { width: 26px; height: 22px; transform: translateX(calc(var(--i, 0) * 26px)); }
 }
