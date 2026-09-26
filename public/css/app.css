@@ -114,7 +114,7 @@
 }
 
 /* ---------------- App shell ---------------- */
-.app-main { padding: 28px 0 96px; position: relative; z-index: 1; }
+.app-main { padding-block: 28px 96px; padding-inline: var(--gutter); position: relative; z-index: 1; min-width: 0; max-width: 100%; box-sizing: border-box; }
 .app-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 20px 0 28px; }
 .app-title { font-size: clamp(2rem, 4.2vw, 3.1rem); letter-spacing: -0.04em; margin-top: 6px; }
 .app-hero-actions { gap: 10px; align-items: center; }
@@ -362,6 +362,7 @@
   background: var(--token-face); border: 1px solid var(--line); box-shadow: var(--shadow-2), inset 0 1px 0 var(--rim);
   display: flex; flex-direction: column; gap: 12px;
   transition: transform var(--dur-3) var(--ease-out), box-shadow var(--dur-3) var(--ease-out);
+  min-width: 0; max-width: 100%; box-sizing: border-box;
 }
 .tcard::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--accent); }
 .tcard.s-checked_in::before { background: var(--success); }
@@ -371,13 +372,15 @@
 .tcard.changed { animation: changed 1.4s var(--ease-out); }
 @keyframes called-pulse { 50% { box-shadow: 0 0 0 8px transparent, var(--shadow-3); } }
 @keyframes changed { 0% { box-shadow: 0 0 0 0 var(--accent-glow), var(--shadow-2); transform: scale(1.01); } 100% { box-shadow: 0 0 0 14px transparent, var(--shadow-2); } }
-.tcard-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.tcard-org { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); max-width: 60%; }
-.tcard-org span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tcard-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; min-width: 0; max-width: 100%; }
+.tcard-org { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); max-width: 65%; min-width: 0; }
+.tcard-org span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .tcard-code { font-size: clamp(2.6rem, 6vw, 3.6rem); font-weight: 600; letter-spacing: -0.05em; line-height: 1; color: var(--ink); }
-.tcard-sub { font-size: 0.9rem; color: var(--ink-2); margin-top: -4px; }
-.qviz { display: flex; align-items: center; gap: 16px; padding: 12px 14px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); }
-.qviz.future { gap: 10px; font-size: 0.88rem; color: var(--ink-2); }
+.tcard-sub { font-size: 0.9rem; color: var(--ink-2); margin-top: -4px; min-width: 0; word-break: break-word; overflow-wrap: anywhere; }
+.qviz { display: flex; align-items: center; gap: 16px; padding: 12px 14px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); min-width: 0; max-width: 100%; box-sizing: border-box; }
+.qviz.future { gap: 10px; font-size: 0.88rem; color: var(--ink-2); min-width: 0; }
+.qviz.future span { min-width: 0; word-break: break-word; overflow-wrap: anywhere; line-height: 1.35; }
+.qviz.future .i { flex-shrink: 0; }
 .qviz-dots { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .qviz-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
 .qviz-dots em { font-style: normal; font-size: 0.74rem; color: var(--muted); }
@@ -481,7 +484,8 @@
 
 /* ---------------- Responsive Scaling & Symmetry ---------------- */
 @media (max-width: 1080px) {
-  .app-grid, .admin-grid { grid-template-columns: 1fr; gap: 24px; }
+  .app-grid, .admin-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; width: 100%; max-width: 100%; }
+  .panel { min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box; }
   .book-panel { position: static; }
   .kpi-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .auth-layout { grid-template-columns: 1fr; }
@@ -499,26 +503,35 @@
 }
 
 @media (max-width: 768px) {
-  .app-main { padding: 12px 0 72px; }
+  .app-main { padding-block: 16px 72px; padding-inline: var(--gutter); min-width: 0; max-width: 100%; box-sizing: border-box; }
   .app-hero { margin: 6px 0 16px; gap: 10px; }
   .app-title { font-size: clamp(1.6rem, 5vw, 2.2rem); }
-  .panel.card { padding: clamp(14px, 3.5vw, 20px); border-radius: var(--r-lg); }
-  .tcard { padding: 18px 16px; border-radius: var(--r-xl); }
+  .panel.card { padding: clamp(14px, 3.5vw, 18px); border-radius: var(--r-lg); min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box; }
+  .org-list { margin: 0; padding: 2px 0; min-width: 0; max-width: 100%; box-sizing: border-box; }
+  .org-opt { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+  .org-opt > span:nth-child(2) { min-width: 0; overflow: hidden; }
+  .org-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+  .org-meta { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+  .tcard { padding: 18px 16px; border-radius: var(--r-xl); min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box; }
   .tcard-code { font-size: clamp(2.2rem, 7vw, 2.8rem); }
   .confirm-bar { padding: 14px 12px; }
   .tcard-more { display: none !important; }
   .tcard-actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 8px;
     width: 100%;
-    margin-top: 4px;
+    margin-top: 6px;
   }
   .tcard-actions .btn {
     width: 100%;
     justify-content: center;
-    height: 42px;
-    font-size: 0.88rem;
+    min-height: 44px;
+    height: 44px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    border-radius: var(--r-pill);
+    touch-action: manipulation;
   }
 }
 
