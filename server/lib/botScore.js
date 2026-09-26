@@ -136,27 +136,92 @@
     return [component(warm / clicks.length, 1.5, 'clicks-without-approach')];
   }
 
+  function touchSignals(touches, touchMoves, touchMetrics) {
+    if (!touches && (!touchMoves || !touchMoves.length)) return [];
+    var out = [];
+    var count = Math.max(0, Number(touches) || 0);
+    
+    // Evaluate touch movement trajectories if available
+    if (touchMoves && touchMoves.length >= 8) {
+      var segs = [];
+      for (var i = 1; i < touchMoves.length; i++) {
+        var dx = touchMoves[i][1] - touchMoves[i - 1][1];
+        var dy = touchMoves[i][2] - touchMoves[i - 1][2];
+        var dt = touchMoves[i][0] - touchMoves[i - 1][0];
+        segs.push({ dx: dx, dy: dy, dt: dt, d: Math.hypot(dx, dy) });
+      }
+      var speeds = [];
+      var pathLen = 0;
+      var microJitter = 0;
+      segs.forEach(function (s) {
+        pathLen += s.d;
+        if (s.dt > 0 && s.d > 0) speeds.push(s.d / s.dt);
+        if (s.d > 0.5 && s.d < 4) microJitter++;
+      });
+      var first = touchMoves[0];
+      var last = touchMoves[touchMoves.length - 1];
+      var displacement = Math.hypot(last[1] - first[1], last[2] - first[2]);
+      
+      // Human swipe has natural speed variation (acceleration + deceleration)
+      var speedCv = coeffVar(speeds);
+      out.push(component((speedCv - 0.12) / 0.4, 2, 'uniform-touch-speed'));
+
+      // Natural thumb/finger curvature (arc rather than geometric line)
+      if (displacement > 30) {
+        var arcRatio = pathLen / displacement;
+        out.push(component((arcRatio - 1.008) / 0.12, 1.8, 'linear-touch-stroke'));
+      }
+      // Human physiological micro-tremor in touch contact
+      out.push(component(microJitter > 0 ? 0.85 : 0.5, 1, 'touch-micro-jitter'));
+    }
+
+    // Physical sensor touch contact validation (radius, pressure variance)
+    if (touchMetrics && typeof touchMetrics === 'object') {
+      if (typeof touchMetrics.avgRadius === 'number') {
+        // Real fingertips have radius 6px to 35px; synthetic scripts often report 0 or 1
+        var radScore = touchMetrics.avgRadius >= 5 ? 0.9 : 0.3;
+        out.push(component(radScore, 1.2, 'synthetic-touch-radius'));
+      }
+      if (typeof touchMetrics.pressureVariance === 'number' && touchMetrics.pressureVariance > 0) {
+        out.push(component(0.85, 1, 'touch-pressure-variation'));
+      }
+    }
+
+    if (count >= 2 && !out.length) {
+      out.push(component(0.82, 1.5, 'touch'));
+    }
+    return out;
+  }
+
   function analyze(input) {
     if (!input || typeof input !== 'object') {
-      return { score: 0.5, verdict: 'inconclusive', hard: false, reasons: ['no-telemetry'], samples: 0 };
+      return { score: 0.5, verdict: 'inconclusive', hard: false, reasons: ['no-telemetry'], samples: 0, mode: 'none' };
     }
     if (input.webdriver === true) {
-      return { score: 0.02, verdict: 'bot', hard: true, reasons: ['automation-flag'], samples: 0 };
+      return { score: 0.02, verdict: 'bot', hard: true, reasons: ['automation-flag'], samples: 0, mode: 'bot' };
     }
     if (Number(input.untrusted) >= 3) {
-      return { score: 0.05, verdict: 'bot', hard: true, reasons: ['synthetic-events'], samples: 0 };
+      return { score: 0.05, verdict: 'bot', hard: true, reasons: ['synthetic-events'], samples: 0, mode: 'bot' };
     }
     var moves = cleanSeries(input.moves, LIMITS.moves, 3);
+    var touchMoves = cleanSeries(input.touchMoves, LIMITS.moves, 3);
     var clicks = cleanSeries(input.clicks, LIMITS.clicks, 3);
     var keys = cleanSeries(input.keys, LIMITS.keys, 1);
     var touches = Math.max(0, Number(input.touches) || 0);
     var dwell = Number(input.dwellMs) || 0;
+    var touchMetrics = input.touchMetrics || null;
+
+    // Use touchMoves if moves is empty or combine them
+    var allMoves = moves.length ? moves : touchMoves;
+    var isTouchMode = touches > 0 || (touchMoves && touchMoves.length > 0) || (input.mode === 'touch');
 
     var comps = []
-      .concat(moveSignals(moves))
+      .concat(moveSignals(allMoves))
       .concat(keySignals(keys))
-      .concat(clickSignals(clicks, moves, touches));
-    if (touches >= 3) comps.push(component(0.8, 1.2, 'touch'));
+      .concat(clickSignals(clicks, allMoves, touches))
+      .concat(touchSignals(touches, touchMoves.length ? touchMoves : moves, touchMetrics));
+
+    if (touches >= 3 && !touchMoves.length) comps.push(component(0.8, 1.2, 'touch'));
     if (dwell > 0 && dwell < 800) comps.push(component(0, 1, 'submitted-too-fast'));
 
     var weight = 0;
@@ -166,12 +231,28 @@
       sum += c.value * c.weight;
     });
     var reasons = comps.filter(function (c) { return c.value < 0.4; }).map(function (c) { return c.name; });
+    var totalSamples = Math.max(moves.length, touchMoves.length, touches);
+
     if (weight < MIN_EVIDENCE_WEIGHT) {
-      return { score: 0.5, verdict: 'inconclusive', hard: false, reasons: reasons.concat('not-enough-signal'), samples: moves.length };
+      return { 
+        score: 0.5, 
+        verdict: 'inconclusive', 
+        hard: false, 
+        reasons: reasons.concat('not-enough-signal'), 
+        samples: totalSamples,
+        mode: isTouchMode ? 'touch' : 'pointer'
+      };
     }
     var score = Math.round((sum / weight) * 100) / 100;
     var verdict = score >= HUMAN ? 'human' : score >= SUSPICIOUS ? 'suspicious' : 'bot';
-    return { score: score, verdict: verdict, hard: false, reasons: reasons, samples: moves.length };
+    return { 
+      score: score, 
+      verdict: verdict, 
+      hard: false, 
+      reasons: reasons, 
+      samples: totalSamples,
+      mode: isTouchMode ? 'touch' : 'pointer'
+    };
   }
 
   return { analyze: analyze, LIMITS: LIMITS, HUMAN: HUMAN, SUSPICIOUS: SUSPICIOUS };

@@ -71,6 +71,26 @@ test('botScore: robotic fixed-interval typing is penalised', () => {
   assert.ok(r.reasons.includes('robotic-keystroke-rhythm'));
 });
 
+test('botScore: human touch gesture with curvature and speed variation scores as human', () => {
+  const touchMoves = [];
+  let t = 100;
+  for (let i = 0; i <= 20; i++) {
+    const progress = i / 20;
+    t += Math.round(15 + 25 * Math.sin(progress * Math.PI));
+    const x = Math.round(50 + 200 * progress);
+    const y = Math.round(100 + 80 * Math.sin(progress * Math.PI * 0.8) + (i % 2 === 0 ? 1 : -1));
+    touchMoves.push([t, x, y]);
+  }
+  const r = BotScore.analyze({
+    touches: 2,
+    touchMoves,
+    touchMetrics: { avgRadius: 12, pressureVariance: 0.15 },
+    dwellMs: 1500,
+  });
+  assert.equal(r.verdict, 'human', `touch verdict: ${JSON.stringify(r)}`);
+  assert.equal(r.mode, 'touch');
+});
+
 test('crypto: password hashing verifies and rejects', async () => {
   const hash = await hashPassword('correct horse battery');
   assert.equal(await verifyPassword('correct horse battery', hash), true);

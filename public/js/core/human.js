@@ -10,24 +10,81 @@ const LIMITS = { moves: 400, clicks: 60, keys: 200 };
 const HOLD_MS = 1650;
 const t = () => Math.round(performance.now() - T0);
 
-const state = { moves: [], clicks: [], keys: [], touches: 0, untrusted: 0 };
+const state = { 
+  moves: [], 
+  touchMoves: [],
+  clicks: [], 
+  keys: [], 
+  touches: 0, 
+  untrusted: 0,
+  touchMetrics: { avgRadius: 10, pressureVariance: 0.1, count: 0 }
+};
 let lastMoveT = -1;
+let lastTouchT = -1;
 
 const pushCapped = (arr, item, max) => {
   arr.push(item);
   if (arr.length > max) arr.splice(0, arr.length - max);
 };
 
+// Pointer tracking (mouse and pen)
 addEventListener('pointermove', (e) => {
   if (!e.isTrusted) {
     state.untrusted++;
     return;
   }
-  if (e.pointerType === 'touch') return;
   const now = t();
+  if (e.pointerType === 'touch') {
+    // Touch pointer events
+    if (now === lastTouchT) return;
+    lastTouchT = now;
+    const pt = [now, Math.round(e.clientX), Math.round(e.clientY)];
+    pushCapped(state.touchMoves, pt, LIMITS.moves);
+    pushCapped(state.moves, pt, LIMITS.moves);
+    if (e.width && e.height) {
+      const radius = (e.width + e.height) / 4;
+      state.touchMetrics.avgRadius = Math.round((state.touchMetrics.avgRadius * 0.8) + (radius * 0.2));
+    }
+    return;
+  }
   if (now === lastMoveT) return;
   lastMoveT = now;
   pushCapped(state.moves, [now, Math.round(e.clientX), Math.round(e.clientY)], LIMITS.moves);
+}, { passive: true, capture: true });
+
+// Touch event tracking (swipes, drags, taps)
+addEventListener('touchmove', (e) => {
+  if (!e.isTrusted) {
+    state.untrusted++;
+    return;
+  }
+  const touch = e.touches[0];
+  if (!touch) return;
+  const now = t();
+  if (now === lastTouchT) return;
+  lastTouchT = now;
+  const pt = [now, Math.round(touch.clientX), Math.round(touch.clientY)];
+  pushCapped(state.touchMoves, pt, LIMITS.moves);
+  pushCapped(state.moves, pt, LIMITS.moves);
+  if (touch.radiusX && touch.radiusY) {
+    const r = (touch.radiusX + touch.radiusY) / 2;
+    state.touchMetrics.avgRadius = Math.round((state.touchMetrics.avgRadius * 0.7) + (r * 0.3));
+  }
+}, { passive: true, capture: true });
+
+addEventListener('touchstart', (e) => {
+  if (!e.isTrusted) {
+    state.untrusted++;
+    return;
+  }
+  state.touches++;
+  state.touchMetrics.count++;
+  const touch = e.touches[0];
+  if (touch) {
+    const pt = [t(), Math.round(touch.clientX), Math.round(touch.clientY)];
+    pushCapped(state.touchMoves, pt, LIMITS.moves);
+    pushCapped(state.moves, pt, LIMITS.moves);
+  }
 }, { passive: true, capture: true });
 
 addEventListener('pointerdown', (e) => {
@@ -51,14 +108,18 @@ addEventListener('keydown', (e) => {
 }, { capture: true });
 
 function snapshot() {
+  const isTouch = state.touches > 0 || state.touchMoves.length > 0;
   return {
     moves: state.moves.slice(),
+    touchMoves: state.touchMoves.slice(),
     clicks: state.clicks.slice(),
     keys: state.keys.slice(),
     touches: state.touches,
+    touchMetrics: { ...state.touchMetrics },
     untrusted: state.untrusted,
     webdriver: navigator.webdriver === true,
     dwellMs: t(),
+    mode: isTouch ? 'touch' : 'pointer',
   };
 }
 
@@ -66,7 +127,15 @@ function snapshot() {
 function liveScore(windowSize = 160) {
   if (!window.BotScore) return null;
   const snap = snapshot();
-  return window.BotScore.analyze({ ...snap, moves: snap.moves.slice(-windowSize), clicks: [], dwellMs: 0 });
+  const moves = snap.moves.slice(-windowSize);
+  const touchMoves = snap.touchMoves.slice(-windowSize);
+  return window.BotScore.analyze({ 
+    ...snap, 
+    moves: moves, 
+    touchMoves: touchMoves,
+    clicks: [], 
+    dwellMs: 0 
+  });
 }
 
 /**
@@ -137,4 +206,12 @@ function challenge(token, message) {
   return result;
 }
 
-export const Human = Object.freeze({ snapshot, liveScore, challenge });
+function recordTouchPoint(x, y) {
+  const now = t();
+  const pt = [now, Math.round(x), Math.round(y)];
+  state.touches++;
+  pushCapped(state.touchMoves, pt, LIMITS.moves);
+  pushCapped(state.moves, pt, LIMITS.moves);
+}
+
+export const Human = Object.freeze({ snapshot, liveScore, challenge, recordTouchPoint });

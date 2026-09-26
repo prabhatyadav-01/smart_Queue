@@ -538,6 +538,9 @@ function notifLoop() {
 /* ---------------- 08 · Human meter ---------------- */
 const REASON_LABELS = {
   'uniform-speed': 'constant speed',
+  'uniform-touch-speed': 'robotic touch speed',
+  'linear-touch-stroke': 'too straight',
+  'touch-micro-jitter': 'touch tremor',
   'perfectly-straight-moves': 'too straight',
   'repeated-identical-steps': 'repeated steps',
   'metronomic-timing': 'machine-like timing',
@@ -548,24 +551,105 @@ const REASON_LABELS = {
 
 function meterLoop() {
   const gauge = $('[data-gauge]');
+  const pad = $('[data-meter-pad]');
+  const canvas = $('[data-meter-canvas]');
+  let ctx = null;
+  const trail = [];
+
+  if (canvas && pad) {
+    const resizeCanvas = () => {
+      const rect = pad.getBoundingClientRect();
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+
+    let drawing = false;
+    const addPt = (clientX, clientY, isTouch = false) => {
+      const rect = pad.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      trail.push({ x, y, t: performance.now(), isTouch });
+      if (trail.length > 50) trail.shift();
+      Human.recordTouchPoint(clientX, clientY);
+      pad.classList.add('has-drawn');
+      drawTrail();
+      update();
+    };
+
+    const drawTrail = () => {
+      if (!ctx || trail.length < 2) return;
+      const rect = pad.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      for (let i = 1; i < trail.length; i++) {
+        const age = performance.now() - trail[i].t;
+        if (age > 2000) continue;
+        const alpha = Math.max(0, 1 - (age / 2000)) * (i / trail.length);
+        ctx.beginPath();
+        ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+        ctx.lineTo(trail[i].x, trail[i].y);
+        ctx.lineWidth = Math.max(2, (trail[i].isTouch ? 8 : 4) * (i / trail.length));
+        ctx.strokeStyle = trail[i].isTouch 
+          ? `rgba(85, 102, 255, ${alpha})` 
+          : `rgba(51, 69, 232, ${alpha})`;
+        ctx.stroke();
+      }
+    };
+
+    pad.addEventListener('pointerdown', (e) => {
+      drawing = true;
+      pad.classList.add('active');
+      addPt(e.clientX, e.clientY, e.pointerType === 'touch');
+    });
+    pad.addEventListener('pointermove', (e) => {
+      if (drawing || e.pointerType === 'mouse') {
+        addPt(e.clientX, e.clientY, e.pointerType === 'touch');
+      }
+    });
+    pad.addEventListener('pointerup', () => { drawing = false; pad.classList.remove('active'); });
+    pad.addEventListener('pointercancel', () => { drawing = false; pad.classList.remove('active'); });
+  }
+
   const update = () => {
     const r = Human.liveScore();
-    if (!r || r.samples < 15 || r.verdict === 'inconclusive') {
-      $('[data-meter-verdict]').textContent = 'Keep moving your cursor or finger';
+    const modeEl = $('[data-meter-mode]');
+    const verdict = $('[data-meter-verdict]');
+    
+    if (modeEl && r) {
+      modeEl.textContent = r.mode === 'touch' ? 'Touch gestures' : 'Cursor movement';
+    }
+
+    if (!r || r.samples < 10 || r.verdict === 'inconclusive') {
+      if (verdict) verdict.textContent = 'Keep swiping or moving';
       $('[data-meter-samples]').textContent = String(r?.samples ?? 0);
       return;
     }
     const score = Math.round(r.score * 100);
-    gauge.style.setProperty('--score', String(score));
-    gauge.className = `gauge is-${r.verdict}`;
-    animateNumber($('[data-meter-score]'), score, { duration: 400 });
-    const verdict = $('[data-meter-verdict]');
-    verdict.className = `pill ${r.verdict === 'human' ? 'success' : r.verdict === 'bot' ? 'danger' : 'warn'}`;
-    verdict.textContent = r.verdict === 'human' ? 'Looks human' : r.verdict === 'bot' ? 'Bot-like' : 'Suspicious';
+    if (gauge) {
+      gauge.style.setProperty('--score', String(score));
+      gauge.className = `gauge is-${r.verdict}`;
+    }
+    animateNumber($('[data-meter-score]'), score, { duration: 300 });
+    if (verdict) {
+      verdict.className = `pill ${r.verdict === 'human' ? 'success' : r.verdict === 'bot' ? 'danger' : 'warn'}`;
+      verdict.textContent = r.verdict === 'human' 
+        ? (r.mode === 'touch' ? 'Human Touch' : 'Human Cursor') 
+        : (r.verdict === 'bot' ? 'Bot-like' : 'Suspicious');
+    }
     $('[data-meter-samples]').textContent = String(r.samples);
-    $('[data-meter-flags]').textContent = r.reasons.length ? r.reasons.slice(0, 2).map((x) => REASON_LABELS[x] || x).join(', ') : 'none';
+    const flags = $('[data-meter-flags]');
+    if (flags) {
+      flags.textContent = r.reasons.length ? r.reasons.slice(0, 2).map((x) => REASON_LABELS[x] || x).join(', ') : 'none';
+    }
   };
-  onVisible($('#trust'), () => setInterval(update, 450));
+  onVisible($('#trust'), () => setInterval(update, 400));
 }
 
 /* ---------------- 07 · Latency probe ---------------- */

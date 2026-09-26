@@ -287,7 +287,7 @@
           </ul>
         </div>
         <div class="card meter-card reveal" data-meter>
-          <div class="row"><strong>Human signal</strong><span class="spacer"></span><span class="pill" data-meter-verdict>Move your cursor or finger</span></div>
+          <div class="row"><strong>Human signal</strong><span class="spacer"></span><span class="pill" data-meter-verdict>Swipe or move cursor</span></div>
           <div class="gauge" data-gauge>
             <svg viewBox="0 0 200 120" aria-hidden="true">
               <path class="g-track" d="M20 110 A80 80 0 0 1 180 110" />
@@ -295,11 +295,15 @@
             </svg>
             <div class="gauge-val"><b class="tnum" data-meter-score>—</b><span>/ 100</span></div>
           </div>
-          <div class="meter-stats">
-            <div><span>Samples</span><b class="tnum" data-meter-samples>0</b></div>
-            <div><span>Flags</span><b data-meter-flags>none</b></div>
+          <div class="meter-pad" data-meter-pad>
+            <canvas data-meter-canvas></canvas>
+            <span class="meter-pad-label"><svg class="i" aria-hidden="true"><use href="/img/icons.svg#cursor"></use></svg>Touch & drag or move cursor here</span>
           </div>
-          <p class="muted meter-tip">Try drawing or swiping a perfectly straight line at a steady speed, the way a script would, and watch the score drop.</p>
+          <div class="meter-stats">
+            <div><span>Signal Source</span><b data-meter-mode>Touch / Cursor</b></div>
+            <div><span>Recorded Points</span><b class="tnum" data-meter-samples>0</b></div>
+          </div>
+          <p class="muted meter-tip">Touch, swipe, or move your cursor. Human fingertips trace natural curves, speed shifts, and micro-jitter that bots cannot spoof.</p>
         </div>
       </div>
     </section>
