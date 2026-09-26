@@ -111,8 +111,9 @@ function bindTokenActions() {
     if (!btn) return;
     const id = Number(btn.closest('[data-bid]').dataset.bid);
     const b = state.bookings.active.find((x) => x.id === id);
-    if (!b) return;
-    if (btn.dataset.act === 'locate') {
+    if (btn.dataset.act === 'toggle-actions') {
+      btn.closest('.tcard').classList.toggle('show-actions');
+    } else if (btn.dataset.act === 'locate') {
       updateLocationPanel($('[data-active]'), b, { message: 'Getting your location…' });
       tracker.checkNow();
     } else if (btn.dataset.act === 'reschedule') {

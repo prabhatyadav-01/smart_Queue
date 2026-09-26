@@ -551,7 +551,7 @@ function meterLoop() {
   const update = () => {
     const r = Human.liveScore();
     if (!r || r.samples < 15 || r.verdict === 'inconclusive') {
-      $('[data-meter-verdict]').textContent = 'Keep moving your cursor';
+      $('[data-meter-verdict]').textContent = 'Keep moving your cursor or finger';
       $('[data-meter-samples]').textContent = String(r?.samples ?? 0);
       return;
     }

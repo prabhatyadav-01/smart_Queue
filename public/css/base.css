@@ -539,3 +539,14 @@ dialog.modal::backdrop { background: rgba(8, 9, 12, 0.42); backdrop-filter: blur
   .btn-sm { height: 40px; }
   .btn-lg { height: 56px; }
 }
+
+@media (max-width: 640px) {
+  .brand span { display: none; }
+  .nav { padding: 0 10px; gap: 8px; }
+  .nav-actions { gap: 4px; }
+  .nav .btn:not(.btn-icon) { padding: 0 12px; font-size: 0.85rem; height: 38px; }
+}
+
+@media (max-width: 420px) {
+  .nav-auth .btn-primary { display: none; }
+}

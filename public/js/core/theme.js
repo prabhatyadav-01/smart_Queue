@@ -45,6 +45,8 @@ export function mountThemeSwitcher(host) {
   host.classList.add('theme-switch');
   host.setAttribute('role', 'group');
   host.setAttribute('aria-label', 'Colour theme');
+  const initialTheme = getTheme();
+  host.style.setProperty('--i', String(Math.max(0, THEMES.findIndex((t) => t.id === initialTheme))));
   host.innerHTML = `<span class="thumb" aria-hidden="true"></span>${THEMES.map(
     (t) => `<button type="button" data-theme-id="${t.id}" aria-label="${t.label} theme" title="${t.label}">${icon(t.icon)}</button>`,
   ).join('')}`;

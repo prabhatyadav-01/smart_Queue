@@ -105,6 +105,7 @@ function tokenCardHTML(b, loc) {
       ${b.deferrals ? `<span class="pill warn">Moved ${b.deferrals}×</span>` : ''}
       <span class="spacer"></span>
       <span class="tcard-org">${icon(cat.icon)}<span>${esc(b.org.name)}</span></span>
+      ${changeable ? `<button type="button" class="tcard-more" aria-label="More options" data-act="toggle-actions">${icon('more')}</button>` : ''}
     </div>
     <div class="tcard-code mono">${esc(b.tokenCode)}</div>
     <div class="tcard-sub">${esc(b.service.name)} · ${esc(fmt.day(b.date))} at ${esc(b.slotTime)}${b.kind === 'walkin' ? ' · walk-in' : ''}</div>
