@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { AsyncLocalStorage } = require('node:async_hooks');
 const pg = require('pg');
-const { SCHEMA_SQL } = require('../scripts/migrate');
+const { SCHEMA_SQL, RLS_SQL } = require('../scripts/migrate');
 
 // Ensure 64-bit integers (BIGINT) and numbers from PostgreSQL parse as JS numbers
 pg.types.setTypeParser(20, (val) => (val === null ? null : Number.parseInt(val, 10)));
@@ -91,6 +91,13 @@ async function openDb(options = {}) {
 
   // Initialize schema
   await pool.query(SCHEMA_SQL);
+  if (!isMemory && RLS_SQL) {
+    try {
+      await pool.query(RLS_SQL);
+    } catch (err) {
+      console.warn('[db] RLS setup notice:', err.message);
+    }
+  }
 
   function getClient() {
     return txStorage.getStore() || pool;

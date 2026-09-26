@@ -16,6 +16,7 @@ const errors = Object.freeze({
   notFound: (msg = 'Not found.') => new AppError(404, 'NOT_FOUND', msg),
   conflict: (msg, code = 'CONFLICT') => new AppError(409, code, msg),
   unprocessable: (msg, code = 'UNPROCESSABLE') => new AppError(422, code, msg),
+  tooManyRequests: (msg = 'Too many requests.', code = 'RATE_LIMITED') => new AppError(429, code, msg),
 });
 
 module.exports = { AppError, errors };

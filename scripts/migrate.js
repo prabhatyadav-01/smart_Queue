@@ -141,6 +141,31 @@ CREATE TABLE IF NOT EXISTS risk_events (
 CREATE INDEX IF NOT EXISTS ix_risk_created ON risk_events(created_at);
 `;
 
+const RLS_SQL = `
+-- Row Level Security (RLS) policies for Supabase Postgres
+ALTER TABLE IF EXISTS organizations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS services ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS counters ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS bookings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS notifications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS audit_log ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS risk_events ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'organizations' AND policyname = 'organizations_public_read') THEN
+    CREATE POLICY organizations_public_read ON organizations FOR SELECT USING (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'services' AND policyname = 'services_public_read') THEN
+    CREATE POLICY services_public_read ON services FOR SELECT USING (true);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE tablename = 'counters' AND policyname = 'counters_public_read') THEN
+    CREATE POLICY counters_public_read ON counters FOR SELECT USING (true);
+  END IF;
+END $$;
+`;
+
 const TABLES = [
   {
     name: 'organizations',
@@ -284,7 +309,7 @@ function generateSqlDump(sqliteDb) {
   return sql;
 }
 
-module.exports = { SCHEMA_SQL, TABLES, migrateData, generateSqlDump };
+module.exports = { SCHEMA_SQL, RLS_SQL, TABLES, migrateData, generateSqlDump };
 
 if (require.main === module) {
   const dbUrl = process.env.DATABASE_URL || process.env.SUPABASE_DB_URL;
@@ -316,9 +341,11 @@ if (require.main === module) {
   });
 
   (async () => {
-    // 1. Ensure schema exists
+    // 1. Ensure schema and RLS policies exist
     console.log('[migrate] Ensuring schema is up to date...');
     await pool.query(SCHEMA_SQL);
+    console.log('[migrate] Ensuring Row Level Security (RLS) is enabled...');
+    await pool.query(RLS_SQL);
 
     // 2. If SQLite file exists, migrate live
     if (fs.existsSync(sqlitePath)) {

@@ -169,7 +169,12 @@ test('cross-site and non-JSON writes are rejected', async () => {
 
 test('security headers are present', async () => {
   const res = await fetch(`${base}/api/orgs`);
-  assert.match(res.headers.get('content-security-policy'), /default-src 'self'/);
+  const csp = res.headers.get('content-security-policy');
+  assert.match(csp, /default-src 'self'/);
+  assert.match(csp, /frame-ancestors 'none'/);
+  assert.equal(res.headers.get('x-frame-options'), 'DENY');
   assert.equal(res.headers.get('x-content-type-options'), 'nosniff');
+  assert.equal(res.headers.get('referrer-policy'), 'strict-origin-when-cross-origin');
   assert.match(res.headers.get('permissions-policy'), /geolocation=\(self\)/);
+  assert.match(res.headers.get('permissions-policy'), /camera=\(\)/);
 });

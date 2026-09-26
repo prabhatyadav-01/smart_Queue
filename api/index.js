@@ -56,10 +56,11 @@ module.exports = async function handler(req, res) {
     console.error('[serverless handler error]', err);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
+    const message = config.IS_PROD ? 'An unexpected error occurred. Please try again.' : (err.message || 'Internal server error.');
     res.end(JSON.stringify({
       success: false,
       data: null,
-      error: { code: 'SERVERLESS_ERROR', message: err.message || 'Internal server error.' },
+      error: { code: 'SERVERLESS_ERROR', message },
     }));
   }
 };

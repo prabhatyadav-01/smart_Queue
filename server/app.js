@@ -23,25 +23,38 @@ const GSI = 'https://accounts.google.com/gsi/';
 function securityHeaders(isProd, supabaseUrl) {
   const supaOrigin = supabaseUrl ? new URL(supabaseUrl).origin : null;
   const connectSources = ["'self'", GSI];
-  if (supaOrigin) connectSources.push(supaOrigin);
+  if (supaOrigin) {
+    connectSources.push(supaOrigin);
+  } else {
+    connectSources.push('https://*.supabase.co');
+  }
 
   return helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'none'"],
+        formAction: ["'self'"],
         scriptSrc: ["'self'", `${GSI}client`, 'https://cdn.jsdelivr.net'],
-        styleSrc: ["'self'", 'https://fonts.googleapis.com', `${GSI}style`],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', `${GSI}style`],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:', 'https://*.googleusercontent.com'],
         connectSrc: connectSources,
+        mediaSrc: ["'self'", 'blob:'],
+        workerSrc: ["'self'", 'blob:'],
+        manifestSrc: ["'self'"],
         frameSrc: [GSI],
-        objectSrc: ["'none'"],
-        baseUri: ["'self'"],
-        formAction: ["'self'"],
-        frameAncestors: ["'none'"],
         upgradeInsecureRequests: isProd ? [] : null,
       },
     },
+    // Prevent clickjacking by denying any iframing of the app
+    xFrameOptions: { action: 'deny' },
+    // Prevent MIME-sniffing
+    xContentTypeOptions: true,
+    // Privacy-preserving referrer policy
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     // Google Identity Services opens a popup that must be able to post back.
     crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
     strictTransportSecurity: isProd ? { maxAge: 31536000, includeSubDomains: true } : false,
@@ -88,7 +101,7 @@ function createApp({ db, config }) {
   app.set('trust proxy', config.TRUST_PROXY ? 1 : false);
   app.use(securityHeaders(config.IS_PROD, config.SUPABASE_URL));
   app.use((_req, res, next) => {
-    res.setHeader('Permissions-Policy', 'geolocation=(self), camera=(), microphone=(), payment=()');
+    res.setHeader('Permissions-Policy', 'geolocation=(self), camera=(), microphone=(), payment=(), usb=(), bluetooth=(), fullscreen=(self)');
     next();
   });
 
@@ -110,6 +123,8 @@ function createApp({ db, config }) {
     sealer: createSealer(config.APP_SECRET),
     googleClientId: config.GOOGLE_CLIENT_ID,
     isTest: Boolean(config.APP_SECRET && config.APP_SECRET.startsWith('test-secret-')),
+    isProd: config.IS_PROD,
+    demoMode: config.DEMO_MODE,
   }));
   api.use('/admin', adminRoutes({ db, services, auth, audit }));
   api.use(publicRoutes({

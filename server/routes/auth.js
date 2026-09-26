@@ -1,5 +1,6 @@
 'use strict';
 
+const crypto = require('node:crypto');
 const express = require('express');
 const OTPAuth = require('otpauth');
 const QRCode = require('qrcode');
@@ -54,17 +55,19 @@ function isTrustedEmail(em, allowTest = false) {
 // In-memory OTP storage for email verification: userId -> { otp, email, expiresAt, attempts }
 const emailOtps = new Map();
 
-function generateAndStoreOtp(userId, userEmail) {
-  const otp = String(Math.floor(100000 + Math.random() * 900000));
+function generateAndStoreOtp(userId, userEmail, isProd = false) {
+  const otp = String(crypto.randomInt(100000, 1000000));
   emailOtps.set(userId, {
     otp,
     email: userEmail,
     expiresAt: Date.now() + 10 * 60 * 1000,
     attempts: 0,
   });
-  console.log(`\n========================================`);
-  console.log(`📧 [SmartQueue OTP] Verification code for ${userEmail}: ${otp}`);
-  console.log(`========================================\n`);
+  if (!isProd) {
+    console.log(`\n========================================`);
+    console.log(`📧 [SmartQueue OTP] Verification code for ${maskEmail(userEmail)}: ${otp}`);
+    console.log(`========================================\n`);
+  }
   return otp;
 }
 
@@ -75,8 +78,9 @@ function nextStep(user, viaGoogle) {
   return 'done';
 }
 
-function authRoutes({ db, auth, requireHuman, limiters, audit, sealer, googleClientId, isTest = false }) {
+function authRoutes({ db, auth, requireHuman, limiters, audit, sealer, googleClientId, isTest = false, isProd = false, demoMode = false }) {
   const r = express.Router();
+  const shouldExposeOtp = !isProd || demoMode;
   const q = (sql) => stmt(db, sql);
   const google = googleClientId ? new OAuth2Client() : null;
   const getUser = async (id) => q('SELECT * FROM users WHERE id=?').get(id);
@@ -105,12 +109,12 @@ function authRoutes({ db, auth, requireHuman, limiters, audit, sealer, googleCli
       return begin(req, res, user, false);
     }
 
-    const otp = generateAndStoreOtp(user.id, user.email);
+    const otp = generateAndStoreOtp(user.id, user.email, isProd);
     await auth.startSession(req, res, user.id, false, Date.now());
     res.json(ok({
       next: 'otp',
       email: user.email,
-      otp,
+      ...(shouldExposeOtp ? { otp } : {}),
       message: `A 6-digit verification code has been sent to ${user.email}.`,
     }));
   });
@@ -142,13 +146,13 @@ function authRoutes({ db, auth, requireHuman, limiters, audit, sealer, googleCli
       return begin(req, res, user, false);
     }
 
-    const otp = generateAndStoreOtp(user.id, user.email);
+    const otp = generateAndStoreOtp(user.id, user.email, isProd);
     await auth.startSession(req, res, user.id, false, Date.now());
     await audit(req, 'login_email_otp_sent', null, user.id);
     res.json(ok({
       next: 'otp',
       email: user.email,
-      otp,
+      ...(shouldExposeOtp ? { otp } : {}),
       message: `A 6-digit verification code has been sent to ${user.email}.`,
     }));
   });
@@ -309,9 +313,9 @@ function authRoutes({ db, auth, requireHuman, limiters, audit, sealer, googleCli
 
   r.post('/otp/resend', limiters.totp, auth.requirePending, async (req, res) => {
     const user = await getUser(req.auth.user.id);
-    const otp = generateAndStoreOtp(user.id, user.email);
+    const otp = generateAndStoreOtp(user.id, user.email, isProd);
     res.json(ok({
-      otp,
+      ...(shouldExposeOtp ? { otp } : {}),
       message: `A new 6-digit verification code has been sent to ${user.email}.`,
     }));
   });
