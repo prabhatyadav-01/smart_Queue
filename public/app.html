@@ -55,8 +55,22 @@
           <h2 id="tokens-title">My tokens</h2>
           <button type="button" class="btn btn-ghost btn-icon" data-refresh aria-label="Refresh tokens"><svg class="i"><use href="/img/icons.svg#refresh"></use></svg></button>
         </div>
+
+        <div class="segmented token-tabs" role="tablist" aria-label="Token options" data-token-view>
+          <button type="button" role="tab" data-view="booked" aria-selected="true" id="tab-booked">
+            <svg class="i"><use href="/img/icons.svg#ticket"></use></svg>
+            <span>Booked</span>
+            <span class="tab-badge" data-badge-booked hidden>0</span>
+          </button>
+          <button type="button" role="tab" data-view="booking" aria-selected="false" id="tab-booking">
+            <svg class="i"><use href="/img/icons.svg#clock"></use></svg>
+            <span>Booking</span>
+            <span class="tab-badge" data-badge-booking hidden>0</span>
+          </button>
+        </div>
+
         <div class="token-list" data-active></div>
-        <details class="history">
+        <details class="history" data-history-box>
           <summary>Recent history</summary>
           <div class="history-list" data-history></div>
         </details>
@@ -69,7 +83,7 @@
         </div>
 
         <div class="step-block">
-          <div class="row wrap" data-cats></div>
+          <div class="tabs-scroll" data-cats></div>
           <div class="search">
             <svg class="i"><use href="/img/icons.svg#search"></use></svg>
             <input class="input" type="search" placeholder="Search offices, hospitals, companies…" data-search aria-label="Search places">

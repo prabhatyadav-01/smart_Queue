@@ -24,17 +24,55 @@ const state = {
   notifs: [],
   liveOrg: undefined,
   disconnect: null,
+  tokenTab: 'booked',
 };
 
 const tracker = createLocationTracker({
   onResult: (id, result) => {
-    const b = state.bookings.active.find((x) => x.id === id);
+    const b = (state.bookings.active || []).find((x) => x.id === id);
     if (b) updateLocationPanel($('[data-active]'), b, result);
     if (result.status && b && result.status !== b.status) refreshBookings();
   },
 });
 
 /* ---------------- Tokens ---------------- */
+function renderCurrentTokens() {
+  const list = $('[data-active]');
+  if (!list) return;
+
+  const allActive = state.bookings.active || [];
+  // Booked tokens: scheduled appointments & reserved seats
+  const bookedTokens = allActive.filter((b) => b.status === 'booked');
+  // Booking tokens: walk-in, checked-in on site, called to counter
+  const bookingTokens = allActive.filter((b) => b.status === 'checked_in' || b.status === 'called' || b.kind === 'walkin');
+
+  // Update symmetric tab badge counters
+  const badgeBooked = $('[data-badge-booked]');
+  if (badgeBooked) {
+    badgeBooked.textContent = String(bookedTokens.length);
+    badgeBooked.hidden = bookedTokens.length === 0;
+  }
+  const badgeBooking = $('[data-badge-booking]');
+  if (badgeBooking) {
+    badgeBooking.textContent = String(bookingTokens.length);
+    badgeBooking.hidden = bookingTokens.length === 0;
+  }
+
+  // Active view
+  const isBooked = state.tokenTab === 'booked';
+  const shown = isBooked ? bookedTokens : bookingTokens;
+
+  renderTokenList(list, shown, tracker, state.codes, { view: state.tokenTab });
+  state.codes = new Map(allActive.map((b) => [b.id, b.tokenCode]));
+
+  // History shown under booked
+  const historyBox = $('[data-history-box]');
+  if (historyBox) {
+    historyBox.hidden = !isBooked;
+    renderHistory($('[data-history]'), state.bookings.history || []);
+  }
+}
+
 async function loadBookings() {
   const list = $('[data-active]');
   try {
@@ -43,17 +81,28 @@ async function loadBookings() {
     renderError(list, err, loadBookings);
     return;
   }
-  renderTokenList(list, state.bookings.active, tracker, state.codes);
-  state.codes = new Map(state.bookings.active.map((b) => [b.id, b.tokenCode]));
-  renderHistory($('[data-history]'), state.bookings.history);
-  tracker.setTargets(state.bookings.active);
+  renderCurrentTokens();
+  tracker.setTargets(state.bookings.active || []);
   tracker.autoStart();
   followLive();
   const max = state.policy?.maxActiveBookings ?? 3;
-  const left = max - state.bookings.active.length;
+  const left = max - (state.bookings.active || []).length;
   $('[data-limit-note]').textContent = left > 0 ? `${left} of ${max} tokens available` : 'Token limit reached';
 }
 const refreshBookings = debounce(loadBookings, 600);
+
+function bindTokenTabs() {
+  const tabs = $('[data-token-view]');
+  if (!tabs) return;
+  tabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-view]');
+    if (!btn) return;
+    const view = btn.dataset.view;
+    state.tokenTab = view;
+    $$('[data-view]', tabs).forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+    renderCurrentTokens();
+  });
+}
 
 function bindTokenActions() {
   $('[data-active]').addEventListener('click', async (e) => {
@@ -497,6 +546,7 @@ async function boot() {
   initDrawer();
   initAlertsButton();
   bindTokenActions();
+  bindTokenTabs();
   $('[data-refresh]').addEventListener('click', loadBookings);
   $('[data-active]').innerHTML = skeletons(2, 'sk-token');
   $('[data-orgs]').innerHTML = skeletons(3, 'sk-row');

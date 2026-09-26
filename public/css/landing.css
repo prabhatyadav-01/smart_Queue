@@ -430,8 +430,26 @@
   .org-opt { grid-template-columns: auto 1fr; }
   .phone { width: 270px; height: 540px; }
 }
+@media (max-width: 560px) {
+  .kiosk-head .segmented {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px;
+    gap: 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .kiosk-head .segmented::-webkit-scrollbar { display: none; }
+  .kiosk-head .segmented button {
+    flex: 0 0 auto;
+    min-width: 110px;
+    padding: 0 14px;
+    scroll-snap-align: start;
+  }
+}
 @media (max-width: 460px) {
   .features { grid-template-columns: 1fr; }
-  .kiosk-head .segmented button span { display: none; }
   .ticket { grid-template-columns: 1fr; }
 }

@@ -118,9 +118,28 @@ function tokenCardHTML(b, loc) {
   </article>`;
 }
 
-export function renderTokenList(el, bookings, tracker, previous) {
+export function renderTokenList(el, bookings, tracker, previous, opts = {}) {
+  const view = opts.view || 'booked';
   if (!bookings.length) {
-    el.innerHTML = stateHTML('empty', { title: 'No active tokens', message: 'Get a token for today, or book a time for later.', actionLabel: 'Get a token', iconName: 'ticket' });
+    if (view === 'booking') {
+      el.innerHTML = `
+        <div class="state empty">
+          <div class="state-icon">${icon('clock')}</div>
+          <h4>No live queue ticket</h4>
+          <p>You have no walk-in or checked-in tokens waiting in line right now. Get a token or check into an appointment.</p>
+          <button type="button" class="btn btn-primary btn-sm" data-state-action="book">Get a token now</button>
+        </div>
+      `;
+    } else {
+      el.innerHTML = `
+        <div class="state empty">
+          <div class="state-icon">${icon('ticket')}</div>
+          <h4>No booked tokens</h4>
+          <p>You don't have any booked appointments. Schedule a time below or get a token.</p>
+          <button type="button" class="btn btn-primary btn-sm" data-state-action="book">Book a token</button>
+        </div>
+      `;
+    }
     return;
   }
   el.innerHTML = bookings.map((b) => tokenCardHTML(b, tracker.get(b.id))).join('');
